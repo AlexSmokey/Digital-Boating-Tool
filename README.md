@@ -1,2 +1,4 @@
 # Digital-Boating-Tool
-An android app that allows a user to create digital breadcrumbs complete with editable pictures and descriptions.  Designed to work with and without location services
+An android app that allows a user to create digital breadcrumbs complete with editable pictures and descriptions.  Designed to work with and without location services.
+
+By Alexander Goebel and Jeffery Humphrey
