@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="edu.rose_hulman.humphrjm.finalproject.MainActivity"
+    tools:showIn="@layout/activity_main"
+    android:background="@drawable/app_background"
+
+    >
+    <ImageView
+        android:id="@+id/topImage"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/top_image"
+        android:layout_alignParentTop="true"
+        android:contentDescription="Top Image"
+        />
+    <LinearLayout
+        android:layout_below="@id/topImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp"
+
+        >
+        <RelativeLayout
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="#DFFFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv0"
+                android:padding="5dp"
+                android:src="@mipmap/ic_launcher"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentStart="true"
+                />
+            <TextView
+                android:id="@+id/tv00"
+                android:layout_toEndOf="@id/iv0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bread Crumbs"
+                android:textSize="36sp"
+                />
+            <TextView
+                android:id="@+id/tv01"
+                android:layout_toEndOf="@id/iv0"
+                android:layout_below="@id/tv00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description..."
+                />
+
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="#DFFFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv1"
+                android:padding="5dp"
+                android:src="@mipmap/ic_launcher"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentStart="true"
+                />
+            <TextView
+                android:id="@+id/tv10"
+                android:layout_toEndOf="@id/iv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location Alarm"
+                android:textSize="36sp"
+                />
+            <TextView
+                android:id="@+id/tv11"
+                android:layout_toEndOf="@id/iv1"
+                android:layout_below="@id/tv10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description..."
+                />
+
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="#DFFFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv0"
+                android:padding="5dp"
+                android:src="@mipmap/ic_launcher"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentStart="true"
+                />
+            <TextView
+                android:id="@+id/tv00"
+                android:layout_toEndOf="@id/iv0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Etc..."
+                android:textSize="36sp"
+                />
+            <TextView
+                android:id="@+id/tv01"
+                android:layout_toEndOf="@id/iv0"
+                android:layout_below="@id/tv00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description..."
+                />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>
