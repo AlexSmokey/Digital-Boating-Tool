@@ -4,8 +4,8 @@
     android:orientation="vertical"
     android:theme="@style/SplashTheme"
     android:layout_width="match_parent"
+    android:id="@+id/splash"
     android:layout_height="match_parent">
-
 
 
 
@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/splashscreen"
+        android:id="@+id/image"
         android:scaleType="centerCrop"
         android:contentDescription="Background Image"
         android:layout_alignParentTop="true"
