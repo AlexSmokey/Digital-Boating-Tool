@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">FinalProject</string>
     <string name="action_settings">Settings</string>
+    <string name="latitude_hint"><![CDATA[<current latitude>]]></string>
+    <string name="longitude_hint"><![CDATA[<current longitude>]]></string>
 </resources>
