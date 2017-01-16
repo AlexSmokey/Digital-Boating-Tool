@@ -25,7 +25,7 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="<current latitude>"
+            android:hint="@string/latitude_hint"
 
             />
 
@@ -39,7 +39,7 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="<current longitude>"
+            android:hint="@string/longitude_hint"
 
             />
 
