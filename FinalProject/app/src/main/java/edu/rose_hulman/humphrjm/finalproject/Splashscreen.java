@@ -30,6 +30,6 @@ public class Splashscreen extends AppCompatActivity {
 
     private void openApp() {
         Intent MainIntent = new Intent(this, MainActivity.class);
-        startActivityForResult(MainIntent, REQUEST_CODE_INPUT);
+        startActivity(MainIntent);
     }
 }

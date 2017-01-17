@@ -1,13 +1,16 @@
 package edu.rose_hulman.humphrjm.finalproject;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
+
+import edu.rose_hulman.humphrjm.finalproject.fragments.BreadCrumbsFragment;
+import edu.rose_hulman.humphrjm.finalproject.fragments.MainPageFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,14 +23,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        RelativeLayout breadCrumbsButton = (RelativeLayout) findViewById(R.id.breadCrumbs);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, new MainPageFragment());
+        fragmentTransaction.commit();
 
-        breadCrumbsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openBreadCrumbs();
-            }
-        });
+
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -46,10 +46,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void openBreadCrumbs() {
-        Intent MainIntent = new Intent(this, BreadCrumbsActivity.class);
-        startActivityForResult(MainIntent, REQUEST_CODE_INPUT);
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

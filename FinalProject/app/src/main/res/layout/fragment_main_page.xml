@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="edu.rose_hulman.humphrjm.finalproject.MainActivity"
-    tools:showIn="@layout/activity_main"
 
     >
     <ImageView
@@ -18,7 +15,14 @@
         android:layout_alignParentTop="true"
         android:contentDescription="Top Image"
         />
-    <LinearLayout
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvMain"
+        android:layout_below="@id/topImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!--<LinearLayout
         android:layout_below="@id/topImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,6 +30,7 @@
         android:padding="10dp"
 
         >
+
         <RelativeLayout
             android:padding="10dp"
             android:layout_margin="10dp"
@@ -127,7 +132,11 @@
 
         </RelativeLayout>
 
+
+
     </LinearLayout>
+
+    -->
 
 
 
