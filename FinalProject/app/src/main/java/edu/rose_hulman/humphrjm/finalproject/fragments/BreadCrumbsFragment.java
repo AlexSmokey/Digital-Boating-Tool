@@ -65,6 +65,9 @@ public class BreadCrumbsFragment extends Fragment {
         Log.e("BreadCrumbs","Starting location");
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         locationListener = new MyLocationListener();
+        crumbs = new ArrayList<BreadCrumb>();
+        if (savedInstanceState != null)
+            crumbs = savedInstanceState.getParcelableArrayList(LIST_KEY);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -94,9 +97,6 @@ public class BreadCrumbsFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.map);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         crumbAdapter = new CrumbAdapter(getContext());
-        crumbs = new ArrayList<BreadCrumb>();
-        if (savedInstanceState != null)
-            crumbs = savedInstanceState.getParcelableArrayList(LIST_KEY);
         crumbAdapter.setCrumbs((ArrayList<BreadCrumb>)crumbs.clone());
         recyclerView.setAdapter(crumbAdapter);
 
@@ -167,12 +167,7 @@ public class BreadCrumbsFragment extends Fragment {
     }
 
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Bundle args = new Bundle();
-        saveInstance(args);
-    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
