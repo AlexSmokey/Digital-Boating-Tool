@@ -47,9 +47,10 @@
 
 
     </LinearLayout>
-    <ImageView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="400dp"
+        android:id="@+id/map"
         android:src="@drawable/example_map"
 
 

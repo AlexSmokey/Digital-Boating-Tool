@@ -12,7 +12,8 @@
         <ImageButton
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
-            android:src="@drawable/example_image_1"
+            android:src="@mipmap/ic_launcher"
+            android:id="@+id/picture"
             android:layout_height="0dp"
             android:layout_width="0dp"
             android:scaleType="fitCenter"
@@ -20,14 +21,14 @@
         <ImageButton
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
-            android:src="@drawable/example_image_2"
+            android:src="@mipmap/ic_launcher"
             android:scaleType="fitCenter"
             android:layout_height="0dp"
             android:layout_width="0dp" />
         <ImageButton
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
-            android:src="@drawable/example_image_3"
+            android:src="@mipmap/ic_launcher"
             android:scaleType="fitCenter"
             android:layout_height="0dp"
             android:layout_width="0dp" />
