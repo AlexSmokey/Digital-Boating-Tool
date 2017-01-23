@@ -87,6 +87,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/notes"
         android:text="1. Don't touch gator\n2. Good fishing near crashed boat\n3. Avoid shaded area\n"
 
         />
@@ -94,6 +95,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/back_button"
         android:text="Back"
         />
 </LinearLayout>
