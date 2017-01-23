@@ -1,4 +1,4 @@
-package edu.rose_hulman.humphrjm.finalproject;
+package edu.rose_hulman.humphrjm.finalproject.adapters;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import edu.rose_hulman.humphrjm.finalproject.MainPageOption;
+import edu.rose_hulman.humphrjm.finalproject.R;
 import edu.rose_hulman.humphrjm.finalproject.fragments.BreadCrumbsFragment;
 
 /**

@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import edu.rose_hulman.humphrjm.finalproject.MainPageAdapter;
+import edu.rose_hulman.humphrjm.finalproject.adapters.MainPageAdapter;
 import edu.rose_hulman.humphrjm.finalproject.R;
 
 /**
