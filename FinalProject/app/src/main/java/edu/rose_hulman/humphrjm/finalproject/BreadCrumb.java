@@ -17,12 +17,14 @@ public class BreadCrumb implements Parcelable{
     private Fragment switchTo;
     private String name;
     private ArrayList<CrumbPicture> pictures;
+    private String notes;
 
     public BreadCrumb(){}
 
     public BreadCrumb(Location location, String name){
         this.location = location;
         this.name = name;
+        notes = "";
         this.switchTo = CrumbFragment.newInstance(this);
         pictures = new ArrayList<CrumbPicture>();
     }
@@ -89,5 +91,13 @@ public class BreadCrumb implements Parcelable{
         parcel.writeString(name);
         parcel.writeList(pictures);
         parcel.writeValue(switchTo);
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }
