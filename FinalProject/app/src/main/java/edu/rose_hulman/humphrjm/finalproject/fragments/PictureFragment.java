@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
+import edu.rose_hulman.humphrjm.finalproject.CrumbPicture;
 import edu.rose_hulman.humphrjm.finalproject.R;
 
 /**
@@ -18,22 +19,24 @@ import edu.rose_hulman.humphrjm.finalproject.R;
  */
 public class PictureFragment extends Fragment {
 
-
-
+    private CrumbPicture crumbPicture;
 
     public PictureFragment() {
     }
 
-    public static PictureFragment newInstance(BreadCrumb breadCrumb) {
-        PictureFragment breadCrumbsFragment = new PictureFragment();
+    public static PictureFragment newInstance(CrumbPicture crumbPicture) {
+        PictureFragment pictureFragment = new PictureFragment();
         Bundle args = new Bundle();
-        breadCrumbsFragment.setArguments(args);
-        return breadCrumbsFragment;
+        pictureFragment.setArguments(args);
+        return pictureFragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getArguments() != null){
+
+        }
 
 
     }

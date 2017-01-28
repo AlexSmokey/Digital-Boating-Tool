@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TextView
@@ -8,6 +8,9 @@
         android:text="Bread Crumbs"
         android:textSize="48sp"
         android:textAlignment="center"
+        android:id="@+id/tvPageTitle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         />
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,30 +18,36 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:layout_gravity="center"
+        android:id="@+id/ll1"
+        android:layout_below="@id/tvPageTitle"
         >
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Lat: "
             android:textSize="16sp"
             />
         <EditText
             android:id="@+id/etLat"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:hint="@string/latitude_hint"
             />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Long: "
+            android:layout_weight="1"
             android:textSize="16sp"
             />
 
         <EditText
             android:id="@+id/etLong"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:hint="@string/longitude_hint"
 
@@ -49,13 +58,16 @@
     </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="match_parent"
         android:id="@+id/map"
+        android:layout_below="@id/ll1"
         android:src="@drawable/example_map"
-
+        android:layout_above="@+id/ll2"
 
         />
     <LinearLayout
+        android:id="@+id/ll2"
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:padding="10dp"
@@ -91,4 +103,4 @@
 
 
 
-</LinearLayout>
+</RelativeLayout>

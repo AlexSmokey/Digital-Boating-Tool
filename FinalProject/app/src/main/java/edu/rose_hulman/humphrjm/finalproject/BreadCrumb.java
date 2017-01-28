@@ -90,7 +90,7 @@ public class BreadCrumb implements Parcelable{
         parcel.writeValue(location);
         parcel.writeString(name);
         parcel.writeList(pictures);
-        parcel.writeValue(switchTo);
+//        parcel.writeValue(switchTo);
     }
 
     public String getNotes() {
