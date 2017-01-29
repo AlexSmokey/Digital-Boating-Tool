@@ -24,8 +24,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, new MainPageFragment());
+        fragmentTransaction.replace(R.id.fragment_container, new SplashscreenFragment());
         fragmentTransaction.commit();
+
 
 
 
@@ -37,6 +38,12 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
+    }
+
+    public void onCompleteLoading(){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, new MainPageFragment());
+        fragmentTransaction.commit();
     }
 
     @Override

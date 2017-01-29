@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:src="@drawable/splashscreen"
         android:id="@+id/image"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:contentDescription="Background Image"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
