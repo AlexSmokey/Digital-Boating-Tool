@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "290405676986",
+    "firebase_url": "https://digital-boating-tool.firebaseio.com",
+    "project_id": "digital-boating-tool",
+    "storage_bucket": "digital-boating-tool.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:290405676986:android:e8cea9f9300dd51c",
+        "android_client_info": {
+          "package_name": "edu.rose_hulman.humphrjm.finalproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "290405676986-g3amut43am1gp37t7qp290t46rn33567.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTL8qWh6Y5S6pkgEWktBIq-6FgceX9Abw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

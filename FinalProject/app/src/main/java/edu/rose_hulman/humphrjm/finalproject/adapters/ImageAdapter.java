@@ -14,6 +14,8 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -26,6 +28,8 @@ import edu.rose_hulman.humphrjm.finalproject.views.SquareImageView;
  */
 
 public class ImageAdapter extends BaseAdapter {
+
+    private FirebaseDatabase crumbRef;
 
     private ArrayList<CrumbPicture> pictureList;
     private Context mContext;
@@ -72,15 +76,20 @@ public class ImageAdapter extends BaseAdapter {
         imageView.setMaxHeight(wid);
 
         if(crumbPicture != null) {
-            if (crumbPicture.getLocalPicturePath() == null) {
-                if (crumbPicture.getRemotePicturePath() != null) {
-                    downloadImage();
-                }
+//            if (crumbPicture.getLocalPicturePath() == null) {
+//                if (crumbPicture.getRemotePicturePath() != null) {
+//                    downloadImage();
+//                }
+//                imageView.setImageResource(R.mipmap.ic_launcher);
+//            } else {
+//
+//                imageView.setImageBitmap(crumbPicture.getBitmap());
+//            }
+            Bitmap bitmap = crumbPicture.getBitmap();
+            if(bitmap == null){
+                downloadImage();
                 imageView.setImageResource(R.mipmap.ic_launcher);
             } else {
-                File image = new File(crumbPicture.getLocalPicturePath());
-                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
                 imageView.setImageBitmap(bitmap);
             }
         } else {

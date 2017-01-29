@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -109,8 +110,8 @@ public class BreadCrumbsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-                    int lat = Integer.parseInt(etLat.getText().toString());
-                    int lon = Integer.parseInt(etLat.getText().toString());
+                    float lat = Float.parseFloat(etLat.getText().toString());
+                    float lon = Float.parseFloat(etLat.getText().toString());
                     Location loc = new Location("");
                     loc.setLatitude(lat);
                     loc.setLongitude(lon);
@@ -126,14 +127,15 @@ public class BreadCrumbsFragment extends Fragment {
 
             }
         });
-
-        recyclerView.setOnClickListener(new View.OnClickListener() {
+        ImageButton refreshButton = (ImageButton) view.findViewById(R.id.ibRefresh);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Location location = ((MyLocationListener) locationListener).getLocation();
                 if(location != null) {
-                    etLat.setText(String.format("%.2f",location.getLatitude()));
-                    etLong.setText(String.format("%.2f",location.getLongitude()));
+                    etLat.setText(String.format("%.4f",location.getLatitude()));
+                    etLong.setText(String.format("%.4f",location.getLongitude()));
                 } else {
                     etLat.setText(String.valueOf(-1));
                     etLong.setText(String.valueOf(-1));

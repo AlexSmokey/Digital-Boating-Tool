@@ -14,7 +14,7 @@ import edu.rose_hulman.humphrjm.finalproject.fragments.MainPageFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int REQUEST_CODE_INPUT = 2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +40,7 @@ public class MainActivity extends AppCompatActivity {
 //        });
     }
 
-    public void onCompleteLoading(){
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, new MainPageFragment());
-        fragmentTransaction.commit();
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -132,6 +132,9 @@ public class CrumbFragment extends Fragment {
                 dispatchTakePictureIntent();
             } else {
                 CrumbPicture crumbPicture = (CrumbPicture) gridView.getAdapter().getItem(position);
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, PictureFragment.newInstance(crumbPicture));
+                fragmentTransaction.commit();
             }
 
         }
