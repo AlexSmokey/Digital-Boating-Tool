@@ -5,46 +5,53 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.ArrayList;
 
 import edu.rose_hulman.humphrjm.finalproject.fragments.CrumbFragment;
+import edu.rose_hulman.humphrjm.finalproject.views.CustomLocation;
 
 /**
  * Created by goebelag on 1/15/2017.
  */
 public class BreadCrumb implements Parcelable{
     private String key;
-    private Location location;
-    private Fragment switchTo;
+    private CustomLocation customLocation;
     private String name;
     private ArrayList<CrumbPicture> pictures;
     private String notes;
 
     public BreadCrumb(){}
 
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public BreadCrumb(Location location, String name){
-        this.location = location;
+        this.customLocation = new CustomLocation(location);
         this.name = name;
+
         notes = "";
-        this.switchTo = CrumbFragment.newInstance(this);
-        pictures = new ArrayList<CrumbPicture>();
+        pictures = new ArrayList<>();
     }
 
-    public Location getLocation() {
-        return location;
+    public CustomLocation getLocation() {
+        return customLocation;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLocation(CustomLocation customLocation) {
+        this.customLocation = customLocation;
     }
 
-
-    public Fragment getSwitchTo() {
-        return switchTo;
-    }
-
-    public void setSwitchTo(Fragment switchTo) {
-        this.switchTo = switchTo;
+    @Exclude
+    public void setLocation(Location location){
+        this.customLocation = new CustomLocation(location);
     }
 
     public String getName() {
@@ -70,9 +77,10 @@ public class BreadCrumb implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeValue(location);
+        parcel.writeValue(customLocation);
         parcel.writeString(name);
         parcel.writeList(pictures);
+        parcel.writeString(notes);
 //        parcel.writeValue(switchTo);
     }
 
@@ -82,5 +90,12 @@ public class BreadCrumb implements Parcelable{
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public void setValues(BreadCrumb otherCrumb){
+        this.customLocation = otherCrumb.customLocation;
+        this.name = otherCrumb.name;
+        this.pictures = otherCrumb.pictures;
+        this.notes = otherCrumb.notes;
     }
 }

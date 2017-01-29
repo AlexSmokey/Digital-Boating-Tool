@@ -19,7 +19,10 @@ import edu.rose_hulman.humphrjm.finalproject.fragments.PictureFragment;
 public class CrumbPicture implements Parcelable{
 //    private Picture picture;
     private String key;
+
+
     private String localPicturePath;
+
     private String remotePicturePath;
     private String pictureTitle;
     private String pictureNotes;
@@ -51,7 +54,7 @@ public class CrumbPicture implements Parcelable{
 //        this.switchTo = switchTo;
 //    }
 
-
+    @Exclude
     public String getLocalPicturePath() {
         return localPicturePath;
     }
@@ -65,6 +68,8 @@ public class CrumbPicture implements Parcelable{
         this.key = key;
     }
 
+
+    @Exclude
     public void setLocalPicturePath(String localPicturePath) {
         this.localPicturePath = localPicturePath;
 
@@ -113,5 +118,7 @@ public class CrumbPicture implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(localPicturePath);
         dest.writeString(remotePicturePath);
+        dest.writeString(pictureTitle);
+        dest.writeString(pictureNotes);
     }
 }

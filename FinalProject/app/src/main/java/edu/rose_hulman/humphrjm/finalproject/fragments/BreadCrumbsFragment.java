@@ -22,10 +22,17 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
+import edu.rose_hulman.humphrjm.finalproject.Constants;
 import edu.rose_hulman.humphrjm.finalproject.MyLocationListener;
 import edu.rose_hulman.humphrjm.finalproject.R;
 import edu.rose_hulman.humphrjm.finalproject.adapters.CrumbAdapter;
@@ -38,10 +45,9 @@ public class BreadCrumbsFragment extends Fragment {
 
     private final long TEN_SECONDS = 0; // frequency to pull location
     private final long METERS = 0; // difference in meters to pull location
-    private final int GPS_REQUEST_CODE = 1;
+
     private final String LIST_KEY = "List_Key";
 
-    private ArrayList<BreadCrumb> crumbs;
 
     private EditText etLat, etLong;
     private Button bSave, bLoad, bAdd;
@@ -49,6 +55,13 @@ public class BreadCrumbsFragment extends Fragment {
 
     LocationManager locationManager;
     LocationListener locationListener;
+
+    private DatabaseReference breadCrumbReference;
+
+    private void dbInit(){
+        breadCrumbReference = FirebaseDatabase.getInstance().getReference().child("crumbs");
+        breadCrumbReference.addChildEventListener(new CrumbsChildEventListener());
+    }
 
     public BreadCrumbsFragment() {
     }
@@ -60,15 +73,16 @@ public class BreadCrumbsFragment extends Fragment {
         return breadCrumbsFragment;
     }
 
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e("BreadCrumbs","Starting location");
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         locationListener = new MyLocationListener();
-        crumbs = new ArrayList<BreadCrumb>();
-        if (savedInstanceState != null)
-            crumbs = savedInstanceState.getParcelableArrayList(LIST_KEY);
+//        if (savedInstanceState != null)
+//            crumbs = savedInstanceState.getParcelableArrayList(LIST_KEY);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -79,7 +93,7 @@ public class BreadCrumbsFragment extends Fragment {
             // for ActivityCompat#requestPermissions for more details.
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    GPS_REQUEST_CODE);
+                    Constants.GPS_REQUEST_CODE);
 
 
         } else {
@@ -87,6 +101,8 @@ public class BreadCrumbsFragment extends Fragment {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TEN_SECONDS, METERS, locationListener);
 
         }
+        crumbAdapter = new CrumbAdapter(getContext());
+        dbInit();
 
     }
 
@@ -97,8 +113,8 @@ public class BreadCrumbsFragment extends Fragment {
         View view = inflater.inflate(R.layout.breadcrumbs, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.map);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        crumbAdapter = new CrumbAdapter(getContext());
-        crumbAdapter.setCrumbs((ArrayList<BreadCrumb>)crumbs.clone());
+
+//        crumbAdapter.setCrumbs((ArrayList<BreadCrumb>)crumbs.clone());
         recyclerView.setAdapter(crumbAdapter);
 
 
@@ -116,9 +132,9 @@ public class BreadCrumbsFragment extends Fragment {
                     loc.setLatitude(lat);
                     loc.setLongitude(lon);
                     loc.setTime(System.nanoTime());
-                    BreadCrumb c = new BreadCrumb(loc, crumbs.size() + "");
-                    crumbs.add(c);
-                    crumbAdapter.addCrumb(c);
+                    BreadCrumb c = new BreadCrumb(loc, 0 + "");
+//                    crumbs.add(c);
+                    breadCrumbReference.push().setValue(c);
                 } catch (Exception e) {
                     Log.e("BOAT", "Breadcrumb could not be made " + e.getMessage());
                 }
@@ -162,7 +178,7 @@ public class BreadCrumbsFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == GPS_REQUEST_CODE){
+        if(requestCode == Constants.GPS_REQUEST_CODE){
             // TODO: first time run
         }
 
@@ -174,11 +190,50 @@ public class BreadCrumbsFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        saveInstance(outState);
+//        saveInstance(outState);
     }
 
-    private void saveInstance(Bundle data) {
-        data.putParcelableArrayList(LIST_KEY, this.crumbs);
+//    private void saveInstance(Bundle data) {
+//        data.putParcelableArrayList(LIST_KEY, this.crumbs);
+//    }
+
+
+
+    public class CrumbsChildEventListener implements ChildEventListener {
+
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            BreadCrumb breadCrumb = dataSnapshot.getValue(BreadCrumb.class);
+            breadCrumb.setKey(dataSnapshot.getKey());
+            crumbAdapter.addCrumb(breadCrumb);
+            crumbAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            String key = dataSnapshot.getKey();
+            BreadCrumb newCrumb = dataSnapshot.getValue(BreadCrumb.class);
+            newCrumb.setKey(key);
+            crumbAdapter.updateCrumb(newCrumb);
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            String key = dataSnapshot.getKey();
+            BreadCrumb newCrumb = dataSnapshot.getValue(BreadCrumb.class);
+            newCrumb.setKey(key);
+            crumbAdapter.removeCrumb(newCrumb);
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.e("BreadCrumbsFragmentDB", "Database error: " + databaseError.toString());
+        }
     }
 
 }

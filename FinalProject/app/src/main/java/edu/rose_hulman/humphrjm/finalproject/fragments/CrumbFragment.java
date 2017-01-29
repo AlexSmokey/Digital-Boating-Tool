@@ -34,6 +34,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 
+import com.google.firebase.database.DatabaseReference;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -63,13 +65,16 @@ public class CrumbFragment extends Fragment {
 
 
 
+
+
     public CrumbFragment() {
     }
 
     public static CrumbFragment newInstance(BreadCrumb breadCrumb) {
         CrumbFragment breadCrumbsFragment = new CrumbFragment();
-        breadCrumbsFragment.setCrumb(breadCrumb);
+//        breadCrumbsFragment.setCrumb(breadCrumb);
         Bundle args = new Bundle();
+        args.putParcelable("breadCrumb",breadCrumb);
         breadCrumbsFragment.setArguments(args);
         return breadCrumbsFragment;
     }
@@ -77,6 +82,9 @@ public class CrumbFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getArguments() != null){
+            crumb = getArguments().getParcelable("breadCrumb");
+        }
         imageAdapter = new ImageAdapter(getContext());
 
     }
