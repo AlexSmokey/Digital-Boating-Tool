@@ -102,7 +102,7 @@
             android:textSize="24sp" />
 
         <EditText
-            android:id="@+id/notes"
+            android:id="@+id/etNotes"
             android:lines="3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

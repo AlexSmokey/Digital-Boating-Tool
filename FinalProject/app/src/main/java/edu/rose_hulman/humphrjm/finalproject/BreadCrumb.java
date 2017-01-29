@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import edu.rose_hulman.humphrjm.finalproject.fragments.CrumbFragment;
 import edu.rose_hulman.humphrjm.finalproject.views.CustomLocation;
@@ -66,8 +67,13 @@ public class BreadCrumb implements Parcelable{
         return pictures;
     }
 
+    @Exclude
     public void setPictures(ArrayList<CrumbPicture> pictures) {
         this.pictures = pictures;
+    }
+
+    public void setPictures(HashMap<String, CrumbPicture> pictures){
+        this.pictures = new ArrayList<>(pictures.values());
     }
 
     @Override
@@ -81,6 +87,7 @@ public class BreadCrumb implements Parcelable{
         parcel.writeString(name);
         parcel.writeList(pictures);
         parcel.writeString(notes);
+        parcel.writeString(key);
 //        parcel.writeValue(switchTo);
     }
 

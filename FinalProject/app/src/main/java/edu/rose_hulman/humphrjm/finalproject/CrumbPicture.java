@@ -32,6 +32,8 @@ public class CrumbPicture implements Parcelable{
 
 
     public CrumbPicture(String remotePicturePath, String localPicturePath) {
+        this.pictureTitle = "title";
+        this.pictureNotes = "notes";
         this.remotePicturePath = remotePicturePath;
         this.localPicturePath = localPicturePath;
 //        this.picture = picture;
@@ -99,6 +101,7 @@ public class CrumbPicture implements Parcelable{
         this.remotePicturePath = remotePicturePath;
     }
 
+    @Exclude
     public Bitmap getBitmap(){ // do not pass bitmaps through fragments, bad bad bad
         if(getLocalPicturePath() == null){
             return null;
@@ -120,5 +123,16 @@ public class CrumbPicture implements Parcelable{
         dest.writeString(remotePicturePath);
         dest.writeString(pictureTitle);
         dest.writeString(pictureNotes);
+    }
+
+    public void setValues(CrumbPicture otherPicture){
+        if(otherPicture != null) {
+            if (otherPicture.localPicturePath != null && !otherPicture.localPicturePath.isEmpty()) {
+                this.localPicturePath = otherPicture.localPicturePath;
+            }
+            this.remotePicturePath = otherPicture.remotePicturePath;
+            this.pictureNotes = otherPicture.pictureNotes;
+            this.pictureTitle = otherPicture.pictureTitle;
+        }
     }
 }

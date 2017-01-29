@@ -199,7 +199,7 @@ public class BreadCrumbsFragment extends Fragment {
 
 
 
-    public class CrumbsChildEventListener implements ChildEventListener {
+    private class CrumbsChildEventListener implements ChildEventListener {
 
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {

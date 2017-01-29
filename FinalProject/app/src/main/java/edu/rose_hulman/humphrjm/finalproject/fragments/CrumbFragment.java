@@ -23,6 +23,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +36,12 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,12 +65,18 @@ import static android.app.Activity.RESULT_OK;
 public class CrumbFragment extends Fragment {
 
     private BreadCrumb crumb;
-    ImageView picture;
+
+    private EditText notes, title;
 
     private GridView gridView;
     private ImageAdapter imageAdapter;
 
+    private DatabaseReference crumbRef;
 
+    private void dbInit(){
+        crumbRef = FirebaseDatabase.getInstance().getReference().child("crumbs").child(crumb.getKey());
+        crumbRef.addValueEventListener(new CrumbDetailValueEventListener());
+    }
 
 
 
@@ -85,7 +98,8 @@ public class CrumbFragment extends Fragment {
         if(getArguments() != null){
             crumb = getArguments().getParcelable("breadCrumb");
         }
-        imageAdapter = new ImageAdapter(getContext());
+        imageAdapter = new ImageAdapter(getContext(), crumb.getKey());
+        dbInit();
 
     }
 
@@ -98,6 +112,27 @@ public class CrumbFragment extends Fragment {
 
         gridView.setAdapter(imageAdapter);
         gridView.setOnItemClickListener(onGridClickListener);
+
+        notes = (EditText) view.findViewById(R.id.etNotes);
+        if(crumb != null) {
+            notes.setText(crumb.getNotes());
+        }
+        notes.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                crumbRef.child("notes").setValue(notes.getText().toString());
+            }
+        });
 
 //        this.crumb.getPictures().add(new CrumbPicture(null)); //HEYYYY THIS IS ONLY FOR THE DEV PROCESS
 //        picture = (ImageView)view.findViewById(R.id.picture);
@@ -141,7 +176,8 @@ public class CrumbFragment extends Fragment {
             } else {
                 CrumbPicture crumbPicture = (CrumbPicture) gridView.getAdapter().getItem(position);
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, PictureFragment.newInstance(crumbPicture));
+                fragmentTransaction.replace(R.id.fragment_container, PictureFragment.newInstance(crumbPicture, crumb.getKey()));
+                fragmentTransaction.addToBackStack("crumbPicture");
                 fragmentTransaction.commit();
             }
 
@@ -156,7 +192,7 @@ public class CrumbFragment extends Fragment {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPG_" + timeStamp + "_";
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        Log.e("CreateIMageFile",storageDir.getAbsolutePath());
+        Log.e("CreateImageFile",storageDir.getAbsolutePath());
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -207,6 +243,22 @@ public class CrumbFragment extends Fragment {
             imageAdapter.addItem(new CrumbPicture(null, mCurrentPhotoPath));
 
 
+        }
+    }
+
+
+    private class CrumbDetailValueEventListener implements ValueEventListener {
+
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            BreadCrumb breadCrumb = dataSnapshot.getValue(BreadCrumb.class);
+            crumb.setValues(breadCrumb);
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.e("ImageAdapterDB", "Database error: " + databaseError.toString());
         }
     }
 

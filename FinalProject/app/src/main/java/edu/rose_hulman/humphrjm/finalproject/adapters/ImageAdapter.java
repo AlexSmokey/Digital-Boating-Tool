@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.drawable.PictureDrawable;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -14,11 +15,16 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
 import edu.rose_hulman.humphrjm.finalproject.CrumbPicture;
 import edu.rose_hulman.humphrjm.finalproject.R;
 import edu.rose_hulman.humphrjm.finalproject.views.SquareImageView;
@@ -29,16 +35,21 @@ import edu.rose_hulman.humphrjm.finalproject.views.SquareImageView;
 
 public class ImageAdapter extends BaseAdapter {
 
-    private FirebaseDatabase crumbRef;
+    private DatabaseReference pictureRef;
 
     private ArrayList<CrumbPicture> pictureList;
     private Context mContext;
 
-    public ImageAdapter(Context c) {
+    private String breadCrumbKey;
+
+    public ImageAdapter(Context c, String breadCrumbKey) {
+        this.breadCrumbKey = breadCrumbKey;
         mContext = c;
         pictureList = new ArrayList<>();
         pictureList.add(null);
         notifyDataSetChanged();
+        pictureRef = FirebaseDatabase.getInstance().getReference().child("crumbs").child(breadCrumbKey).child("pictures");
+        pictureRef.addChildEventListener(new CrumbChildEventListener());
     }
 
     public int getCount() {
@@ -75,7 +86,7 @@ public class ImageAdapter extends BaseAdapter {
         imageView.setMinimumHeight(wid);
         imageView.setMaxHeight(wid);
 
-        if(crumbPicture != null) {
+        if (crumbPicture != null) {
 //            if (crumbPicture.getLocalPicturePath() == null) {
 //                if (crumbPicture.getRemotePicturePath() != null) {
 //                    downloadImage();
@@ -86,7 +97,7 @@ public class ImageAdapter extends BaseAdapter {
 //                imageView.setImageBitmap(crumbPicture.getBitmap());
 //            }
             Bitmap bitmap = crumbPicture.getBitmap();
-            if(bitmap == null){
+            if (bitmap == null) {
                 downloadImage();
                 imageView.setImageResource(R.mipmap.ic_launcher);
             } else {
@@ -109,26 +120,67 @@ public class ImageAdapter extends BaseAdapter {
         return imageView;
     }
 
-    private void downloadImage(){
+    private void downloadImage() {
 
     }
 
 
-    private static Bitmap pictureDrawable2Bitmap(Picture picture) {
-        PictureDrawable pd = new PictureDrawable(picture);
-        Bitmap bitmap = Bitmap.createBitmap(pd.getIntrinsicWidth(), pd.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawPicture(pd.getPicture());
-        return bitmap;
-    }
 
-    public void addItem(CrumbPicture picture){
-        pictureList.add(0, picture);
+    public void addItem(CrumbPicture picture) {
+        pictureRef.push().setValue(picture);
         notifyDataSetChanged();
     }
 
-    public Object getLastItem(){
-        return pictureList.get(pictureList.size()-1);
+    public Object getLastItem() {
+        return pictureList.get(pictureList.size() - 1);
+    }
+
+
+    private class CrumbChildEventListener implements ChildEventListener {
+
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            CrumbPicture crumbPicture = dataSnapshot.getValue(CrumbPicture.class);
+            crumbPicture.setKey(dataSnapshot.getKey());
+            pictureList.add(0, crumbPicture);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            CrumbPicture crumbPicture = dataSnapshot.getValue(CrumbPicture.class);
+            String key = dataSnapshot.getKey();
+            for(CrumbPicture c : pictureList){
+                if(c.getKey().equals(key)){
+                    c.setValues(crumbPicture);
+                    notifyDataSetChanged();
+                    return;
+                }
+            }
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            CrumbPicture crumbPicture = dataSnapshot.getValue(CrumbPicture.class);
+            String key = dataSnapshot.getKey();
+            for(CrumbPicture c : pictureList){
+                if(c.getKey().equals(key)){
+                    pictureList.remove(c);
+                    notifyDataSetChanged();
+                    return;
+                }
+            }
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.e("ImageAdapterDB", "Database error: " + databaseError.toString());
+        }
     }
 
 
