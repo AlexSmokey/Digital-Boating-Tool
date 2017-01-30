@@ -12,4 +12,5 @@
     <string name="invalid_lat_long_message">Make sure that the latitude and longitude are valid.  This includes making sure that each is a number written in decimal</string>
     <string name="clear">Clear</string>
     <string name="cont">Continue</string>
+    <string name="shake_message">Reset Latitude and Longitude?</string>
 </resources>

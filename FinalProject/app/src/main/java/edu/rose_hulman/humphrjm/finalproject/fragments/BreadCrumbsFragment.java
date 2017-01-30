@@ -4,6 +4,10 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -44,7 +49,7 @@ import edu.rose_hulman.humphrjm.finalproject.adapters.MainPageAdapter;
 /**
  * Created by goebelag on 1/15/2017.
  */
-public class BreadCrumbsFragment extends Fragment {
+public class BreadCrumbsFragment extends Fragment implements SensorEventListener{
 
     private final long TEN_SECONDS = 0; // frequency to pull location
     private final long METERS = 0; // difference in meters to pull location
@@ -58,6 +63,11 @@ public class BreadCrumbsFragment extends Fragment {
 
     LocationManager locationManager;
     LocationListener locationListener;
+
+    private SensorManager mSensorManager;
+    private float mAccel; // acceleration apart from gravity
+    private float mAccelCurrent; // current acceleration including gravity
+    private float mAccelLast; // last acceleration including gravity
 
     private DatabaseReference breadCrumbReference;
 
@@ -83,6 +93,10 @@ public class BreadCrumbsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.e("BreadCrumbs","Starting location");
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        mSensorManager = (SensorManager) this.getContext().getSystemService(Context.SENSOR_SERVICE);
+        mAccel = 0.00f;
+        mAccelCurrent = SensorManager.GRAVITY_EARTH;
+        mAccelLast = SensorManager.GRAVITY_EARTH;
         locationListener = new MyLocationListener();
 //        if (savedInstanceState != null)
 //            crumbs = savedInstanceState.getParcelableArrayList(LIST_KEY);
@@ -168,15 +182,7 @@ public class BreadCrumbsFragment extends Fragment {
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Location location = ((MyLocationListener) locationListener).getLocation();
-                if(location != null) {
-                    etLat.setText(String.format("%.4f",location.getLatitude()));
-                    etLong.setText(String.format("%.4f",location.getLongitude()));
-                } else {
-                    etLat.setText(String.valueOf(-1));
-                    etLong.setText(String.valueOf(-1));
-                }
+                setCurrentPosition();
             }
         });
 
@@ -190,6 +196,17 @@ public class BreadCrumbsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public void setCurrentPosition() {
+        Location location = ((MyLocationListener) locationListener).getLocation();
+        if(location != null) {
+            etLat.setText(String.format("%.4f",location.getLatitude()));
+            etLong.setText(String.format("%.4f",location.getLongitude()));
+        } else {
+            etLat.setText(String.valueOf(-1));
+            etLong.setText(String.valueOf(-1));
+        }
     }
 
     //    @Override
@@ -221,6 +238,55 @@ public class BreadCrumbsFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 //        saveInstance(outState);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent se) {
+        float x = se.values[0];
+        float y = se.values[1];
+        float z = se.values[2];
+        mAccelLast = mAccelCurrent;
+        mAccelCurrent = (float) Math.sqrt((double) (x*x + y*y + z*z));
+        float delta = mAccelCurrent - mAccelLast;
+        mAccel = mAccel * 0.9f + delta; // perform low-cut filter
+        if (mAccel > 100) {
+            Snackbar.make(getView(), "", Snackbar.LENGTH_LONG)
+                    .setAction(R.string.shake_message, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            setCurrentPosition();
+                        }
+                    })
+                    .show();
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if(this.getUserVisibleHint()) {
+            this.registerSensorListener();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        this.unregisterSensorListener();
+    }
+
+    private void registerSensorListener() {
+        mSensorManager.registerListener(this, mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0), SensorManager.SENSOR_DELAY_FASTEST);
+    }
+
+    private void unregisterSensorListener() {
+        mSensorManager.unregisterListener(this);
     }
 
 //    private void saveInstance(Bundle data) {
