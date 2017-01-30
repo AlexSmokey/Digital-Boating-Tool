@@ -6,4 +6,10 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="invalid_lat_long">Invalid Latitude and/or Longitude</string>
+    <string name="more">More</string>
+    <string name="invalid_lat_long_title">Invalid Coordinates</string>
+    <string name="invalid_lat_long_message">Make sure that the latitude and longitude are valid.  This includes making sure that each is a number written in decimal</string>
+    <string name="clear">Clear</string>
+    <string name="cont">Continue</string>
 </resources>

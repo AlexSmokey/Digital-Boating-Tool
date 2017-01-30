@@ -2,6 +2,7 @@ package edu.rose_hulman.humphrjm.finalproject.fragments;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -9,8 +10,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -125,22 +128,40 @@ public class BreadCrumbsFragment extends Fragment {
         bAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 try {
                     float lat = Float.parseFloat(etLat.getText().toString());
-                    float lon = Float.parseFloat(etLat.getText().toString());
+                    float lon = Float.parseFloat(etLong.getText().toString());
                     Location loc = new Location("");
                     loc.setLatitude(lat);
                     loc.setLongitude(lon);
                     loc.setTime(System.nanoTime());
                     BreadCrumb c = new BreadCrumb(loc, 0 + "");
-//                    crumbs.add(c);
+                    //                    crumbs.add(c);
                     breadCrumbReference.push().setValue(c);
+                } catch (NumberFormatException e) {
+                    Snackbar.make(getView(), R.string.invalid_lat_long, Snackbar.LENGTH_LONG)
+                            .setAction(getString(R.string.more), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    new AlertDialog.Builder(getContext())
+                                            .setTitle(R.string.invalid_lat_long_title)
+                                            .setMessage(R.string.invalid_lat_long_message)
+                                            .setNegativeButton(R.string.cont, null)
+                                            .setPositiveButton(R.string.clear, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    etLat.setText("");
+                                                    etLong.setText("");
+                                                }
+                                            })
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
+                                }
+                            })
+                            .show();
                 } catch (Exception e) {
                     Log.e("BOAT", "Breadcrumb could not be made " + e.getMessage());
                 }
-
-
-
             }
         });
         ImageButton refreshButton = (ImageButton) view.findViewById(R.id.ibRefresh);
@@ -156,6 +177,15 @@ public class BreadCrumbsFragment extends Fragment {
                     etLat.setText(String.valueOf(-1));
                     etLong.setText(String.valueOf(-1));
                 }
+            }
+        });
+
+        bSave = (Button)view.findViewById(R.id.bSave);
+        bLoad = (Button)view.findViewById(R.id.bLoad);
+        bSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
 
