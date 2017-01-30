@@ -249,7 +249,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
         mAccelCurrent = (float) Math.sqrt((double) (x*x + y*y + z*z));
         float delta = mAccelCurrent - mAccelLast;
         mAccel = mAccel * 0.9f + delta; // perform low-cut filter
-        if (mAccel > 100) {
+        if (mAccel > 48) {
             Snackbar.make(getView(), "", Snackbar.LENGTH_LONG)
                     .setAction(R.string.shake_message, new View.OnClickListener() {
                         @Override
