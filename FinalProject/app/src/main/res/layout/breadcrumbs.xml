@@ -6,6 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Bread Crumbs"
+        android:textColor="@color/colorTitle"
         android:textSize="48sp"
         android:textAlignment="center"
         android:id="@+id/tvPageTitle"
