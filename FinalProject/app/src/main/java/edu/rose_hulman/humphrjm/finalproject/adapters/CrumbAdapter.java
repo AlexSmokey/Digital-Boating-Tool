@@ -45,8 +45,16 @@ public class CrumbAdapter extends RecyclerView.Adapter<CrumbAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.Name.setText(crumbs.get(position).getName());
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                crumbs.remove(position);
+                notifyDataSetChanged();
+                return true;
+            }
+        });
 
     }
 
