@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.File;
 import java.util.ArrayList;
 
+import edu.rose_hulman.humphrjm.finalproject.AsyncTasks.DownloadImageTask;
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
 import edu.rose_hulman.humphrjm.finalproject.CrumbPicture;
 import edu.rose_hulman.humphrjm.finalproject.R;
@@ -33,7 +34,7 @@ import edu.rose_hulman.humphrjm.finalproject.views.SquareImageView;
  * Created by humphrjm on 1/27/2017.
  */
 
-public class ImageAdapter extends BaseAdapter {
+public class ImageAdapter extends BaseAdapter implements DownloadImageTask.ImageConsumer{
 
     private DatabaseReference pictureRef;
 
@@ -98,7 +99,7 @@ public class ImageAdapter extends BaseAdapter {
 //            }
             Bitmap bitmap = crumbPicture.getBitmap();
             if (bitmap == null) {
-                downloadImage();
+                downloadImage(crumbPicture);
                 imageView.setImageResource(R.mipmap.ic_launcher);
             } else {
                 imageView.setImageBitmap(bitmap);
@@ -120,8 +121,8 @@ public class ImageAdapter extends BaseAdapter {
         return imageView;
     }
 
-    private void downloadImage() {
-
+    private void downloadImage(CrumbPicture crumbPicture) {
+        (new DownloadImageTask(this)).execute(crumbPicture.getRemotePicturePath(), crumbPicture.getKey());
     }
 
 
@@ -137,6 +138,15 @@ public class ImageAdapter extends BaseAdapter {
 
     public Object getLastItem() {
         return pictureList.get(pictureList.size() - 1);
+    }
+
+    @Override
+    public void onImageLoaded(Bitmap bitmap, String imageKey) {
+        for(CrumbPicture crumbPicture : pictureList){
+            if(crumbPicture.getKey().equals(imageKey)){
+
+            }
+        }
     }
 
 
@@ -186,6 +196,10 @@ public class ImageAdapter extends BaseAdapter {
             Log.e("ImageAdapterDB", "Database error: " + databaseError.toString());
         }
     }
+
+
+
+
 
 
 }
