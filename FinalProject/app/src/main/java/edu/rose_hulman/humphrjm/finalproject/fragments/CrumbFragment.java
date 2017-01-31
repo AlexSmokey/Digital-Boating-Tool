@@ -112,6 +112,7 @@ public class CrumbFragment extends Fragment {
 
         gridView.setAdapter(imageAdapter);
         gridView.setOnItemClickListener(onGridClickListener);
+        gridView.setOnItemLongClickListener(onGridLongClickListener);
 
         notes = (EditText) view.findViewById(R.id.etNotes);
         if(crumb != null) {
@@ -181,6 +182,14 @@ public class CrumbFragment extends Fragment {
                 fragmentTransaction.commit();
             }
 
+        }
+    };
+
+    public GridView.OnItemLongClickListener onGridLongClickListener = new GridView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            imageAdapter.removeItem(position);
+            return true;
         }
     };
 

@@ -60,7 +60,6 @@ public class CrumbAdapter extends RecyclerView.Adapter<CrumbAdapter.ViewHolder> 
 
     public void setCrumbs(ArrayList<BreadCrumb> list) {
         this.crumbs = list;
-
     }
 
     @Override

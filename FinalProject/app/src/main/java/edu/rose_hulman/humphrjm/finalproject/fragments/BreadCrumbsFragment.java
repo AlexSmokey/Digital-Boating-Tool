@@ -150,7 +150,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
                     loc.setLatitude(lat);
                     loc.setLongitude(lon);
                     loc.setTime(System.nanoTime());
-                    BreadCrumb c = new BreadCrumb(loc, 0 + "");
+                    BreadCrumb c = new BreadCrumb(loc, lat + " " + lon);
                     //                    crumbs.add(c);
                     breadCrumbReference.push().setValue(c);
                 } catch (NumberFormatException e) {

@@ -125,6 +125,10 @@ public class ImageAdapter extends BaseAdapter {
     }
 
 
+    public void removeItem(int location){
+        pictureRef.child(pictureList.get(location).getKey()).removeValue();
+    }
+
 
     public void addItem(CrumbPicture picture) {
         pictureRef.push().setValue(picture);
