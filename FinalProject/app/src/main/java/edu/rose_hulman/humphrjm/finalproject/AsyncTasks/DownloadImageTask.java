@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.InputStream;
@@ -20,25 +21,32 @@ import edu.rose_hulman.humphrjm.finalproject.Constants;
  */
 
 public class DownloadImageTask extends AsyncTask<String, Void, Void>{
-    private final long TEN_MEGABYTES = 1024 * 1024 * 10;
+    private final long FOUR_MEGABYTES = 1024 * 1024 * 4;
 
     private ImageConsumer imageConsumer;
-    private String imageKey;
+    private String imageKey, imagePath;
 
     public DownloadImageTask(ImageConsumer activity){
         imageConsumer = activity;
     }
     @Override
     protected Void doInBackground(String... params) {
-        String imagePath = params[0];
+        Log.e("DOWNLOADING","Downloading file : " + params[0]);
+        imagePath = params[0];
         imageKey = params[1];
+        if(imagePath == null || imageKey == null){
+            return null;
+        }
         try {
 
-            StorageReference storageReference = Constants.DB_STORAGE_ROOT.child("/images/" + imagePath);
+            StorageReference dbRoot = FirebaseStorage.getInstance().getReferenceFromUrl("gs://digital-boating-tool.appspot.com").child("images");
+            StorageReference storageReference = dbRoot.child(imagePath);
 
-            Log.e("DoInBackground", storageReference.getPath());
+            Log.e("DoInBackground","Image Path: " + imagePath);
 
-            storageReference.getBytes(TEN_MEGABYTES).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            Log.e("DoInBackground", "Full path: " + storageReference.getPath());
+
+            storageReference.getBytes(FOUR_MEGABYTES).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                 @Override
                 public void onSuccess(byte[] bytes) {
                     customPostExecute(bytes);
@@ -58,10 +66,10 @@ public class DownloadImageTask extends AsyncTask<String, Void, Void>{
 
     private void customPostExecute(byte[] bytes){
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        imageConsumer.onImageLoaded(bitmap, imageKey);
+        imageConsumer.onImageLoaded(bitmap, imagePath, imageKey);
     }
 
     public interface ImageConsumer{
-        void onImageLoaded(Bitmap bitmap, String key);
+        void onImageLoaded(Bitmap bitmap, String imageName, String key);
     }
 }

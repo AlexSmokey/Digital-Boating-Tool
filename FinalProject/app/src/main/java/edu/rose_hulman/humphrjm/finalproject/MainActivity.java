@@ -9,6 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.HashMap;
+
 import edu.rose_hulman.humphrjm.finalproject.fragments.BreadCrumbsFragment;
 import edu.rose_hulman.humphrjm.finalproject.fragments.MainPageFragment;
 
@@ -16,9 +21,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    public static HashMap<String, String> savedLocalImages;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        savedLocalImages = new HashMap<>();
+//        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+//        FirebaseUser user = mAuth.getCurrentUser();
+//        if(user == null){
+//            mAuth.signInAnonymously();
+//        }
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
