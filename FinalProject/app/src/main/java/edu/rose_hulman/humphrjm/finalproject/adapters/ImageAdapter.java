@@ -23,6 +23,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.rose_hulman.humphrjm.finalproject.AsyncTasks.DownloadImageTask;
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
@@ -40,6 +42,7 @@ public class ImageAdapter extends BaseAdapter implements DownloadImageTask.Image
     private DatabaseReference pictureRef;
 
     private ArrayList<CrumbPicture> pictureList;
+    private HashMap<String, String> savedLocalImages;
     private Context mContext;
 
     private String breadCrumbKey;
@@ -48,6 +51,7 @@ public class ImageAdapter extends BaseAdapter implements DownloadImageTask.Image
         this.breadCrumbKey = breadCrumbKey;
         mContext = c;
         pictureList = new ArrayList<>();
+        savedLocalImages = new HashMap<>();
         pictureList.add(null);
         notifyDataSetChanged();
         pictureRef = FirebaseDatabase.getInstance().getReference().child("crumbs").child(breadCrumbKey).child("pictures");
@@ -152,6 +156,7 @@ public class ImageAdapter extends BaseAdapter implements DownloadImageTask.Image
 
     @Override
     public void onImageUploaded(CrumbPicture crumbPicture) {
+        savedLocalImages.put(crumbPicture.getRemotePicturePath(), crumbPicture.getLocalPicturePath());
         pictureRef.push().setValue(crumbPicture);
     }
 
@@ -162,6 +167,10 @@ public class ImageAdapter extends BaseAdapter implements DownloadImageTask.Image
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             CrumbPicture crumbPicture = dataSnapshot.getValue(CrumbPicture.class);
             crumbPicture.setKey(dataSnapshot.getKey());
+            if(savedLocalImages.containsKey(crumbPicture.getRemotePicturePath())){
+                crumbPicture.setLocalPicturePath(savedLocalImages.get(crumbPicture.getRemotePicturePath()));
+//                savedLocalImages.remove(crumbPicture.getRemotePicturePath());
+            }
             pictureList.add(0, crumbPicture);
             notifyDataSetChanged();
         }
