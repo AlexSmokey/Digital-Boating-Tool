@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import edu.rose_hulman.humphrjm.finalproject.AsyncTasks.DownloadImageTask;
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
 import edu.rose_hulman.humphrjm.finalproject.CrumbPicture;
+import edu.rose_hulman.humphrjm.finalproject.ImageProcessing.ImageHandler;
 import edu.rose_hulman.humphrjm.finalproject.R;
 import edu.rose_hulman.humphrjm.finalproject.views.SquareImageView;
 
@@ -34,7 +35,7 @@ import edu.rose_hulman.humphrjm.finalproject.views.SquareImageView;
  * Created by humphrjm on 1/27/2017.
  */
 
-public class ImageAdapter extends BaseAdapter implements DownloadImageTask.ImageConsumer{
+public class ImageAdapter extends BaseAdapter implements DownloadImageTask.ImageConsumer, ImageHandler.ImageUploadConsumer{
 
     private DatabaseReference pictureRef;
 
@@ -99,7 +100,7 @@ public class ImageAdapter extends BaseAdapter implements DownloadImageTask.Image
 //            }
             Bitmap bitmap = crumbPicture.getBitmap();
             if (bitmap == null) {
-                downloadImage(crumbPicture);
+//                downloadImage(crumbPicture);
                 imageView.setImageResource(R.mipmap.ic_launcher);
             } else {
                 imageView.setImageBitmap(bitmap);
@@ -132,8 +133,8 @@ public class ImageAdapter extends BaseAdapter implements DownloadImageTask.Image
 
 
     public void addItem(CrumbPicture picture) {
-        pictureRef.push().setValue(picture);
-        notifyDataSetChanged();
+        ImageHandler.uploadImage(picture, this);
+//        notifyDataSetChanged();
     }
 
     public Object getLastItem() {
@@ -147,6 +148,11 @@ public class ImageAdapter extends BaseAdapter implements DownloadImageTask.Image
 
             }
         }
+    }
+
+    @Override
+    public void onImageUploaded(CrumbPicture crumbPicture) {
+        pictureRef.push().setValue(crumbPicture);
     }
 
 

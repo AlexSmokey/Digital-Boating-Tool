@@ -20,7 +20,6 @@ public class CrumbPicture implements Parcelable{
 //    private Picture picture;
     private String key;
 
-
     private String localPicturePath;
 
     private String remotePicturePath;
@@ -119,6 +118,7 @@ public class CrumbPicture implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(key);
         dest.writeString(localPicturePath);
         dest.writeString(remotePicturePath);
         dest.writeString(pictureTitle);

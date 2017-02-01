@@ -44,6 +44,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -249,6 +250,31 @@ public class CrumbFragment extends Fragment {
 //            File image = new File(mCurrentPhotoPath);
 //            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
 //            Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+            File photoFile = new File(mCurrentPhotoPath);
+            if(photoFile.exists()){
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 1920, 1080, false);
+                photoFile.delete();
+                photoFile = new File(mCurrentPhotoPath);
+
+                FileOutputStream out = null;
+                try {
+                    out = new FileOutputStream(photoFile);
+                    scaled.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
+                    // PNG is a lossless format, the compression factor (100) is ignored
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (out != null) {
+                            out.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
             imageAdapter.addItem(new CrumbPicture(null, mCurrentPhotoPath));
 
 

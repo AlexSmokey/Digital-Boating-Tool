@@ -35,6 +35,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Void>{
         try {
 
             StorageReference storageReference = Constants.DB_STORAGE_ROOT.child("/images/" + imagePath);
+
             Log.e("DoInBackground", storageReference.getPath());
 
             storageReference.getBytes(TEN_MEGABYTES).addOnSuccessListener(new OnSuccessListener<byte[]>() {

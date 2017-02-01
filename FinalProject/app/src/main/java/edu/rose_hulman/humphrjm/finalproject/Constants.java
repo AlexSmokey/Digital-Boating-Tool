@@ -12,4 +12,5 @@ public class Constants {
     public static final int GPS_REQUEST_CODE = 1;
 
     public static StorageReference DB_STORAGE_ROOT = FirebaseStorage.getInstance().getReference("gs://digital-boating-tool.appspot.com");
+
 }
