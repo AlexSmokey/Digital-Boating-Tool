@@ -36,6 +36,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,10 +52,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
 import edu.rose_hulman.humphrjm.finalproject.CrumbPicture;
 import edu.rose_hulman.humphrjm.finalproject.MainPageOption;
+import edu.rose_hulman.humphrjm.finalproject.MapProcessing.OnMapAndViewReadyListener;
 import edu.rose_hulman.humphrjm.finalproject.MyLocationListener;
 import edu.rose_hulman.humphrjm.finalproject.R;
 import edu.rose_hulman.humphrjm.finalproject.adapters.CrumbAdapter;
@@ -73,6 +78,8 @@ public class CrumbFragment extends Fragment {
     private ImageAdapter imageAdapter;
 
     private DatabaseReference crumbRef;
+
+
 
     private void dbInit(){
         crumbRef = FirebaseDatabase.getInstance().getReference().child("crumbs").child(crumb.getKey());
@@ -102,6 +109,8 @@ public class CrumbFragment extends Fragment {
         imageAdapter = new ImageAdapter(getContext(), crumb.getKey());
         dbInit();
 
+
+
     }
 
     @Nullable
@@ -116,9 +125,27 @@ public class CrumbFragment extends Fragment {
         gridView.setOnItemLongClickListener(onGridLongClickListener);
 
         notes = (EditText) view.findViewById(R.id.etNotes);
+        title = (EditText) view.findViewById(R.id.etCrumbTitle);
         if(crumb != null) {
+            title.setText(crumb.getName());
             notes.setText(crumb.getNotes());
         }
+        title.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                crumbRef.child("name").setValue(title.getText().toString());
+            }
+        });
         notes.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -280,6 +307,8 @@ public class CrumbFragment extends Fragment {
 
         }
     }
+
+
 
 
     private class CrumbDetailValueEventListener implements ValueEventListener {

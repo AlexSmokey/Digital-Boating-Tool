@@ -3,91 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
+    <EditText
+        android:id="@+id/etCrumbTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Crumb Title"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:textSize="18sp"
+        />
 
     <GridView
         android:id="@+id/gvCrumbPictures"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/etCrumbTitle"
         android:layout_above="@+id/ll3"
         android:numColumns="3"
         android:stretchMode="columnWidth">
 
 
     </GridView>
-    <!--<GridLayout-->
-    <!--android:rowCount="3"-->
-    <!--android:columnCount="3"-->
-    <!--android:orientation="horizontal"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="400dp">-->
-    <!--<ImageButton-->
-    <!--android:layout_columnWeight="1"-->
-    <!--android:layout_rowWeight="1"-->
-    <!--android:src="@mipmap/ic_launcher"-->
-    <!--android:id="@+id/picture"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:scaleType="fitCenter"-->
-    <!--/>-->
-    <!--<ImageButton-->
-    <!--android:layout_columnWeight="1"-->
-    <!--android:layout_rowWeight="1"-->
-    <!--android:src="@mipmap/ic_launcher"-->
-    <!--android:scaleType="fitCenter"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_width="0dp" />-->
-    <!--<ImageButton-->
-    <!--android:layout_columnWeight="1"-->
-    <!--android:layout_rowWeight="1"-->
-    <!--android:src="@mipmap/ic_launcher"-->
-    <!--android:scaleType="fitCenter"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_width="0dp" />-->
-    <!--<ImageButton-->
 
-    <!--android:layout_columnWeight="1"-->
-    <!--android:layout_rowWeight="1"-->
-    <!--android:src="@mipmap/ic_launcher"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_width="0dp" />-->
-    <!--<ImageButton-->
-    <!--android:layout_columnWeight="1"-->
-    <!--android:layout_rowWeight="1"-->
-    <!--android:src="@mipmap/ic_launcher"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_width="0dp" />-->
-    <!--<ImageButton-->
-
-    <!--android:layout_columnWeight="1"-->
-    <!--android:layout_rowWeight="1"-->
-    <!--android:src="@mipmap/ic_launcher"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_width="0dp" />-->
-    <!--<ImageButton-->
-
-    <!--android:layout_columnWeight="1"-->
-    <!--android:layout_rowWeight="1"-->
-    <!--android:src="@mipmap/ic_launcher"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_width="0dp" />-->
-    <!--<ImageButton-->
-    <!--android:layout_columnWeight="1"-->
-    <!--android:layout_rowWeight="1"-->
-    <!--android:src="@mipmap/ic_launcher"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_width="0dp" />-->
-    <!--<ImageButton-->
-
-    <!--android:layout_columnWeight="1"-->
-    <!--android:layout_rowWeight="1"-->
-    <!--android:src="@android:drawable/ic_menu_add"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_width="0dp" />-->
-
-
-    <!--</GridLayout>-->
     <LinearLayout
         android:orientation="vertical"
         android:id="@+id/ll3"

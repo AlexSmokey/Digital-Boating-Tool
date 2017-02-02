@@ -1,24 +1,16 @@
 package edu.rose_hulman.humphrjm.finalproject;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import java.io.File;
 import java.util.HashMap;
 
-import edu.rose_hulman.humphrjm.finalproject.fragments.BreadCrumbsFragment;
-import edu.rose_hulman.humphrjm.finalproject.fragments.MainPageFragment;
+import edu.rose_hulman.humphrjm.finalproject.fragments.SplashscreenFragment;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package edu.rose_hulman.humphrjm.finalproject;
+package edu.rose_hulman.humphrjm.finalproject.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import edu.rose_hulman.humphrjm.finalproject.R;
 import edu.rose_hulman.humphrjm.finalproject.fragments.MainPageFragment;
 
 /**
@@ -66,7 +67,7 @@ public class SplashscreenFragment extends Fragment {
             }
             private int doWork() {
 
-                return i * 3;
+                return i * 4;
             }
 
         }).start();

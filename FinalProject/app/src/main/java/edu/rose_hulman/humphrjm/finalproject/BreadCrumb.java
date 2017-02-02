@@ -105,4 +105,8 @@ public class BreadCrumb implements Parcelable{
         this.pictures = otherCrumb.pictures;
         this.notes = otherCrumb.notes;
     }
+
+    public CustomLatLng getCustomLatLng(){
+        return new CustomLatLng(this.getLocation().getLatitude(), this.getLocation().getLongitude(), key, 0);
+    }
 }

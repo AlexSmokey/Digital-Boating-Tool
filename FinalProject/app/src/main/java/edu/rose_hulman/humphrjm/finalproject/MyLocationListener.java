@@ -16,7 +16,7 @@ public class MyLocationListener implements LocationListener{
     @Override
     public void onLocationChanged(Location location) {
         if(location != null){
-            Log.e("Location",location.toString());
+//            Log.e("Location",location.toString());
             this.myLocation = location;
         }else {
             Log.e("Location","null");

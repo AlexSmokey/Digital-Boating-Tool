@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -17,6 +18,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +33,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,24 +50,31 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Random;
 
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
 import edu.rose_hulman.humphrjm.finalproject.Constants;
+import edu.rose_hulman.humphrjm.finalproject.CustomLatLng;
+import edu.rose_hulman.humphrjm.finalproject.MapProcessing.OnMapAndViewReadyListener;
 import edu.rose_hulman.humphrjm.finalproject.MyLocationListener;
 import edu.rose_hulman.humphrjm.finalproject.R;
 import edu.rose_hulman.humphrjm.finalproject.adapters.CrumbAdapter;
 import edu.rose_hulman.humphrjm.finalproject.adapters.MainPageAdapter;
+import edu.rose_hulman.humphrjm.finalproject.views.CustomLocation;
 
 /**
  * Created by goebelag on 1/15/2017.
  */
-public class BreadCrumbsFragment extends Fragment implements SensorEventListener{
+public class BreadCrumbsFragment extends Fragment implements SensorEventListener, OnMapReadyCallback, OnMapAndViewReadyListener.OnGlobalLayoutAndMapReadyListener, GoogleMap.OnMarkerClickListener {
 
     private final long TEN_SECONDS = 0; // frequency to pull location
     private final long METERS = 0; // difference in meters to pull location
 
     private final String LIST_KEY = "List_Key";
+    private final String MAP_FRAGMENT_TAG = "map";
 
 
     private EditText etLat, etLong;
@@ -70,11 +90,42 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
     private float mAccelLast; // last acceleration including gravity
 
     private DatabaseReference breadCrumbReference;
+    private GoogleMap mMap;
+    private SupportMapFragment supportMapFragment;
+    private HashMap<CustomLatLng, BreadCrumb> breadcrumbs = new HashMap<>();
 
-    private void dbInit(){
+
+    private void dbInit() {
         breadCrumbReference = FirebaseDatabase.getInstance().getReference().child("crumbs");
         breadCrumbReference.addChildEventListener(new CrumbsChildEventListener());
     }
+
+    private void mapInit() {
+//        supportMapFragment = SupportMapFragment.newInstance();
+
+        SupportMapFragment supportMapFragment = (SupportMapFragment)
+                getChildFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
+
+        // We only create a fragment if it doesn't already exist.
+        if (supportMapFragment == null) {
+            // To programmatically add the map, we first create a SupportMapFragment.
+            supportMapFragment = SupportMapFragment.newInstance();
+
+            // Then we add it using a FragmentTransaction.
+            FragmentTransaction fragmentTransaction =
+                    getChildFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.map_holder, supportMapFragment, MAP_FRAGMENT_TAG);
+            fragmentTransaction.commit();
+
+        }
+
+
+//        SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapFragment);
+        Log.e("Map Setup", (supportMapFragment == null) ? "null" : "not null");
+//        new OnMapAndViewReadyListener(supportMapFragment, this);
+        supportMapFragment.getMapAsync(this);
+    }
+
 
     public BreadCrumbsFragment() {
     }
@@ -87,11 +138,10 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
     }
 
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("BreadCrumbs","Starting location");
+        Log.e("BreadCrumbs", "Starting location");
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         mSensorManager = (SensorManager) this.getContext().getSystemService(Context.SENSOR_SERVICE);
         mAccel = 0.00f;
@@ -114,12 +164,12 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 
 
         } else {
-            Log.e("BreadCrumbs","Location stuff set");
+            Log.e("BreadCrumbs", "Location stuff set");
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TEN_SECONDS, METERS, locationListener);
 
         }
         crumbAdapter = new CrumbAdapter(getContext());
-        dbInit();
+
 
     }
 
@@ -186,23 +236,39 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
             }
         });
 
-        bSave = (Button)view.findViewById(R.id.bSave);
-        bLoad = (Button)view.findViewById(R.id.bLoad);
+        bSave = (Button) view.findViewById(R.id.bSave);
+        bLoad = (Button) view.findViewById(R.id.bLoad);
         bSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         });
+        recyclerView.setVisibility(View.GONE);
 
+        mapInit();
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+//        Fragment fragment = (getChildFragmentManager().findFragmentById(R.id.mapFragment));
+        try {
+
+
+            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+            ft.remove(supportMapFragment);
+            ft.commit();
+        }catch (Exception e){}
+
     }
 
     public void setCurrentPosition() {
         Location location = ((MyLocationListener) locationListener).getLocation();
-        if(location != null) {
-            etLat.setText(String.format("%.4f",location.getLatitude()));
-            etLong.setText(String.format("%.4f",location.getLongitude()));
+        if (location != null) {
+            etLat.setText(String.format("%.4f", location.getLatitude()));
+            etLong.setText(String.format("%.4f", location.getLongitude()));
         } else {
             etLat.setText(String.valueOf(-1));
             etLong.setText(String.valueOf(-1));
@@ -218,20 +284,18 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 //
 //    }
 
-    void initGPS(){
+    void initGPS() {
 
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == Constants.GPS_REQUEST_CODE){
+        if (requestCode == Constants.GPS_REQUEST_CODE) {
             // TODO: first time run
         }
 
     }
-
-
 
 
     @Override
@@ -246,7 +310,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
         float y = se.values[1];
         float z = se.values[2];
         mAccelLast = mAccelCurrent;
-        mAccelCurrent = (float) Math.sqrt((double) (x*x + y*y + z*z));
+        mAccelCurrent = (float) Math.sqrt((double) (x * x + y * y + z * z));
         float delta = mAccelCurrent - mAccelLast;
         mAccel = mAccel * 0.9f + delta; // perform low-cut filter
         if (mAccel > 48) {
@@ -270,7 +334,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
     public void onStart() {
         super.onStart();
 
-        if(this.getUserVisibleHint()) {
+        if (this.getUserVisibleHint()) {
             this.registerSensorListener();
         }
     }
@@ -294,15 +358,127 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 //    }
 
 
+    private Marker lastMarkerClicked = null;
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.mMap = googleMap;
+        mMap.getUiSettings().setZoomControlsEnabled(false);
+//        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+        mMap.setOnMarkerClickListener(this);
+        dbInit();
+//        drawMarkers();
+    }
+
+//    private Double latMin = null, latMax = null, longMin = null, longMax = null;
+
+    private void drawMarkers() {
+
+        for (CustomLatLng latLng : breadcrumbs.keySet()) {
+
+            drawMarker(latLng);
+
+        }
+    }
+
+    private void drawMarker(CustomLatLng latLng) {
+//        double latVal = latLng.getLatitude();
+//        double longVal = latLng.getLongitude();
+//        if(latMin == null || latMin > latVal){
+//            latMin = latVal;
+//        }
+//        if(latMax == null || latMax < latVal){
+//            latMax = latVal;
+//        }
+//        if(longMin == null || longMin > longVal){
+//            longMin = longVal;
+//        }
+//        if(longMax == null || longMax < longVal){
+//            longMax = longVal;
+//        }
+        lastMarkerClicked = null;
+        mMap.addMarker(new MarkerOptions().position(latLng.getLatLng()).title(latLng.getLatLng().toString()).snippet(latLng.getKey()));
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (CustomLatLng customLatLng : breadcrumbs.keySet()) {
+            builder.include(customLatLng.getLatLng());
+        }
+        LatLngBounds bounds = builder.build();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 20);
+        mMap.animateCamera(cameraUpdate);
+
+    }
+
+    private Marker lastDrawnMarker = null;
+
+    private void drawLines() {
+        CustomLatLng thisLatLong = null, lastLatLong = null;
+        ArrayList<CustomLatLng> list = new ArrayList<>(breadcrumbs.keySet());
+        Collections.sort(list);
+        Log.e("List",list.toString());
+        for(CustomLatLng c : list){
+            lastLatLong = thisLatLong;
+            thisLatLong = c;
+            drawLine(lastLatLong, thisLatLong);
+        }
+    }
+
+    private void drawLine(CustomLatLng lastL, CustomLatLng thisL) {
+        if(lastL != null && thisL != null) {
+            mMap.addPolyline(new PolylineOptions().add(lastL.getLatLng(), thisL.getLatLng()).width(5).color(Color.RED));
+        }
+    }
+
+    private void redrawMarkers() {
+        mMap.clear();
+        drawMarkers();
+        drawLines();
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if (marker.equals(lastMarkerClicked)) {
+            CustomLatLng customLatLng = new CustomLatLng(marker.getPosition(), marker.getSnippet(), 0);
+            BreadCrumb breadCrumb = null;
+            for (CustomLatLng c : breadcrumbs.keySet()) {
+                if (c.equalTo(customLatLng)) {
+                    breadCrumb = breadcrumbs.get(c);
+                    break;
+                }
+            }
+
+            if (breadCrumb != null) {
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, CrumbFragment.newInstance(breadCrumb));
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
+                fragmentTransaction.addToBackStack(breadCrumb.getName());
+                fragmentTransaction.commit();
+            } else {
+                Log.e("onmarkerclick", customLatLng.toString());
+            }
+            return true;
+        }
+        Log.e("LastMarkerClicked", (lastMarkerClicked == null) ? "null" : lastMarkerClicked.toString());
+        Log.e("This Marker", (marker == null) ? "null" : marker.toString());
+        lastMarkerClicked = marker;
+        return false; // false = camera centers on marker, true will not center
+    }
+
+
+    private int index = 0;
     private class CrumbsChildEventListener implements ChildEventListener {
 
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             BreadCrumb breadCrumb = dataSnapshot.getValue(BreadCrumb.class);
             breadCrumb.setKey(dataSnapshot.getKey());
+            CustomLocation customLocation = breadCrumb.getLocation();
+            CustomLatLng latLng = new CustomLatLng(customLocation.getLatitude(), customLocation.getLongitude(), breadCrumb.getKey(), index++);
             crumbAdapter.addCrumb(breadCrumb);
             crumbAdapter.notifyDataSetChanged();
+            breadcrumbs.put(latLng, breadCrumb);
+//            drawMarker(latLng);
+            redrawMarkers();
         }
 
         @Override
@@ -311,6 +487,10 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
             BreadCrumb newCrumb = dataSnapshot.getValue(BreadCrumb.class);
             newCrumb.setKey(key);
             crumbAdapter.updateCrumb(newCrumb);
+            CustomLatLng customLatLng = newCrumb.getCustomLatLng();
+            if (breadcrumbs.containsKey(customLatLng)) {
+                breadcrumbs.get(customLatLng).setValues(newCrumb);
+            }
         }
 
         @Override
@@ -319,6 +499,12 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
             BreadCrumb newCrumb = dataSnapshot.getValue(BreadCrumb.class);
             newCrumb.setKey(key);
             crumbAdapter.removeCrumb(newCrumb);
+            CustomLatLng customLatLng = newCrumb.getCustomLatLng();
+            if (breadcrumbs.containsKey(customLatLng)) {
+                breadcrumbs.remove(customLatLng);
+                redrawMarkers();
+            }
+
         }
 
         @Override
