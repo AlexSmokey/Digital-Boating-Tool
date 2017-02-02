@@ -3,15 +3,11 @@ package edu.rose_hulman.humphrjm.finalproject;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
 
 import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import edu.rose_hulman.humphrjm.finalproject.fragments.CrumbFragment;
-import edu.rose_hulman.humphrjm.finalproject.views.CustomLocation;
 
 /**
  * Created by goebelag on 1/15/2017.
@@ -106,7 +102,8 @@ public class BreadCrumb implements Parcelable{
         this.notes = otherCrumb.notes;
     }
 
+    @Exclude
     public CustomLatLng getCustomLatLng(){
-        return new CustomLatLng(this.getLocation().getLatitude(), this.getLocation().getLongitude(), key, 0);
+        return new CustomLatLng(this.getLocation().getLatitude(), this.getLocation().getLongitude(), key, 0, name);
     }
 }

@@ -18,7 +18,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,15 +29,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -50,10 +46,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Random;
 
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
 import edu.rose_hulman.humphrjm.finalproject.Constants;
@@ -62,8 +56,7 @@ import edu.rose_hulman.humphrjm.finalproject.MapProcessing.OnMapAndViewReadyList
 import edu.rose_hulman.humphrjm.finalproject.MyLocationListener;
 import edu.rose_hulman.humphrjm.finalproject.R;
 import edu.rose_hulman.humphrjm.finalproject.adapters.CrumbAdapter;
-import edu.rose_hulman.humphrjm.finalproject.adapters.MainPageAdapter;
-import edu.rose_hulman.humphrjm.finalproject.views.CustomLocation;
+import edu.rose_hulman.humphrjm.finalproject.CustomLocation;
 
 /**
  * Created by goebelag on 1/15/2017.
@@ -102,7 +95,8 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 
     private void mapInit() {
 //        supportMapFragment = SupportMapFragment.newInstance();
-
+        breadcrumbs.clear();
+        index = 0;
         SupportMapFragment supportMapFragment = (SupportMapFragment)
                 getChildFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
 
@@ -397,7 +391,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 //            longMax = longVal;
 //        }
         lastMarkerClicked = null;
-        mMap.addMarker(new MarkerOptions().position(latLng.getLatLng()).title(latLng.getLatLng().toString()).snippet(latLng.getKey()));
+        mMap.addMarker(new MarkerOptions().position(latLng.getLatLng()).title(latLng.getName()).snippet(latLng.getKey()));
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (CustomLatLng customLatLng : breadcrumbs.keySet()) {
             builder.include(customLatLng.getLatLng());
@@ -424,6 +418,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 
     private void drawLine(CustomLatLng lastL, CustomLatLng thisL) {
         if(lastL != null && thisL != null) {
+            Log.e("DrawLine","Drawing line between " + lastL.getIndex() + " & " + thisL.getIndex());
             mMap.addPolyline(new PolylineOptions().add(lastL.getLatLng(), thisL.getLatLng()).width(5).color(Color.RED));
         }
     }
@@ -437,7 +432,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
     @Override
     public boolean onMarkerClick(Marker marker) {
         if (marker.equals(lastMarkerClicked)) {
-            CustomLatLng customLatLng = new CustomLatLng(marker.getPosition(), marker.getSnippet(), 0);
+            CustomLatLng customLatLng = new CustomLatLng(marker.getPosition(), marker.getSnippet(), 0, "");
             BreadCrumb breadCrumb = null;
             for (CustomLatLng c : breadcrumbs.keySet()) {
                 if (c.equalTo(customLatLng)) {
@@ -473,7 +468,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
             BreadCrumb breadCrumb = dataSnapshot.getValue(BreadCrumb.class);
             breadCrumb.setKey(dataSnapshot.getKey());
             CustomLocation customLocation = breadCrumb.getLocation();
-            CustomLatLng latLng = new CustomLatLng(customLocation.getLatitude(), customLocation.getLongitude(), breadCrumb.getKey(), index++);
+            CustomLatLng latLng = new CustomLatLng(customLocation.getLatitude(), customLocation.getLongitude(), breadCrumb.getKey(), index++, breadCrumb.getName());
             crumbAdapter.addCrumb(breadCrumb);
             crumbAdapter.notifyDataSetChanged();
             breadcrumbs.put(latLng, breadCrumb);
@@ -488,9 +483,27 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
             newCrumb.setKey(key);
             crumbAdapter.updateCrumb(newCrumb);
             CustomLatLng customLatLng = newCrumb.getCustomLatLng();
-            if (breadcrumbs.containsKey(customLatLng)) {
-                breadcrumbs.get(customLatLng).setValues(newCrumb);
+            for(CustomLatLng c: breadcrumbs.keySet()){
+                if(customLatLng.equalTo(c)){
+                    BreadCrumb b = breadcrumbs.get(c);
+                    if(breadcrumbs.remove(c) != null){
+                        Log.e("Remove Breadcrumb","Breadcrumb removed");
+                    }
+                    Log.e("Update Crumb","Index : " + c.getIndex());
+                    c.setName(b.getName());
+                    breadcrumbs.put(c, b);
+                    redrawMarkers();
+                    return;
+                }
             }
+//            if (breadcrumbs.containsKey(customLatLng)) {
+//                BreadCrumb b = breadcrumbs.get(customLatLng);
+//                CustomLatLng oldKey = breadcrumbs.
+//                customLatLng.setName(b.getName());
+//                breadcrumbs.remove(customLatLng);
+//                breadcrumbs.put(customLatLng, b);
+//                redrawMarkers();
+//            }
         }
 
         @Override

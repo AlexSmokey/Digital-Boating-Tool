@@ -1,4 +1,4 @@
-package edu.rose_hulman.humphrjm.finalproject.views;
+package edu.rose_hulman.humphrjm.finalproject;
 
 import android.location.Location;
 import android.os.Parcel;
