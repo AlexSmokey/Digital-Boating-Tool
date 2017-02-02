@@ -1,6 +1,8 @@
 package edu.rose_hulman.humphrjm.finalproject;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +14,7 @@ import android.widget.RelativeLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.File;
 import java.util.HashMap;
 
 import edu.rose_hulman.humphrjm.finalproject.fragments.BreadCrumbsFragment;
@@ -20,13 +23,14 @@ import edu.rose_hulman.humphrjm.finalproject.fragments.MainPageFragment;
 public class MainActivity extends AppCompatActivity {
 
 
-
+    public static String ROOT_DIRECTORY;
     public static HashMap<String, String> savedLocalImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        savedLocalImages = new HashMap<>();
+        ROOT_DIRECTORY =  getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
+//        savedLocalImages = new HashMap<>();
 //        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 //        FirebaseUser user = mAuth.getCurrentUser();
 //        if(user == null){

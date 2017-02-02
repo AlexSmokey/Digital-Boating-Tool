@@ -275,7 +275,7 @@ public class CrumbFragment extends Fragment {
                     }
                 }
             }
-            imageAdapter.addItem(new CrumbPicture(null, mCurrentPhotoPath));
+            imageAdapter.addItem(new CrumbPicture(photoFile.getName()));
 
 
         }

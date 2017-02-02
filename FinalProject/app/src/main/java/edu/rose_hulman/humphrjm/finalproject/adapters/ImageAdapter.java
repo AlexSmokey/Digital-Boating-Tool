@@ -130,15 +130,15 @@ public class ImageAdapter extends BaseAdapter implements DownloadImageTask.Image
     }
 
     private void downloadImage(CrumbPicture crumbPicture) {
-        (new DownloadImageTask(this)).execute(parseImageName(crumbPicture.getRemotePicturePath()), crumbPicture.getKey());
+        (new DownloadImageTask(this)).execute(crumbPicture.getPicturePath(), crumbPicture.getKey());
     }
 
-    private String parseImageName(String picturePath){
-        if(picturePath == null){
-            return null;
-        }
-        return picturePath.substring(picturePath.lastIndexOf("/")+1);
-    }
+//    private String parseImageName(String picturePath){
+//        if(picturePath == null){
+//            return null;
+//        }
+//        return picturePath.substring(picturePath.lastIndexOf("/")+1);
+//    }
 
 
     public void removeItem(int location){
@@ -165,8 +165,8 @@ public class ImageAdapter extends BaseAdapter implements DownloadImageTask.Image
                     File outFile = new File(storageDir, imageName);
                     out = new FileOutputStream(outFile);
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
-                    crumbPicture.setLocalPicturePath(outFile.getAbsolutePath());
-                    MainActivity.savedLocalImages.put(crumbPicture.getRemotePicturePath(), outFile.getAbsolutePath());
+//                    crumbPicture.setLocalPicturePath(outFile.getAbsolutePath());
+//                    MainActivity.savedLocalImages.put(crumbPicture.getRemotePicturePath(), outFile.getAbsolutePath());
                     notifyDataSetChanged();
                     // PNG is a lossless format, the compression factor (100) is ignored
                 } catch (Exception e) {
@@ -186,7 +186,7 @@ public class ImageAdapter extends BaseAdapter implements DownloadImageTask.Image
 
     @Override
     public void onImageUploaded(CrumbPicture crumbPicture) {
-        MainActivity.savedLocalImages.put(crumbPicture.getRemotePicturePath(), crumbPicture.getLocalPicturePath());
+//        MainActivity.savedLocalImages.put(crumbPicture.getRemotePicturePath(), crumbPicture.getLocalPicturePath());
         pictureRef.push().setValue(crumbPicture);
     }
 
@@ -197,10 +197,10 @@ public class ImageAdapter extends BaseAdapter implements DownloadImageTask.Image
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             CrumbPicture crumbPicture = dataSnapshot.getValue(CrumbPicture.class);
             crumbPicture.setKey(dataSnapshot.getKey());
-            if(MainActivity.savedLocalImages.containsKey(crumbPicture.getRemotePicturePath())){
-                crumbPicture.setLocalPicturePath(MainActivity.savedLocalImages.get(crumbPicture.getRemotePicturePath()));
+//            if(MainActivity.savedLocalImages.containsKey(crumbPicture.getRemotePicturePath())){
+//                crumbPicture.setLocalPicturePath(MainActivity.savedLocalImages.get(crumbPicture.getRemotePicturePath()));
 //                savedLocalImages.remove(crumbPicture.getRemotePicturePath());
-            }
+//            }
             pictureList.add(0, crumbPicture);
             notifyDataSetChanged();
         }
