@@ -3,6 +3,7 @@ package edu.rose_hulman.humphrjm.finalproject.ImageProcessing;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -25,6 +26,7 @@ import java.util.Date;
 
 import edu.rose_hulman.humphrjm.finalproject.Constants;
 import edu.rose_hulman.humphrjm.finalproject.CrumbPicture;
+import edu.rose_hulman.humphrjm.finalproject.MainActivity;
 
 /**
  * Created by humphrjm on 1/31/2017.
@@ -42,7 +44,7 @@ public class ImageHandler {
     public static void uploadImage(final CrumbPicture crumbPicture, final ImageUploadConsumer activity){
 
         dbStorage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://digital-boating-tool.appspot.com");
-        Uri file = Uri.fromFile(new File(crumbPicture.getLocalPicturePath()));
+        Uri file = Uri.fromFile(new File(MainActivity.ROOT_DIRECTORY, crumbPicture.getPicturePath()));
 //        Log.e("Upload Path",Constants.DB_STORAGE_ROOT.getPath() + "/images/" + file.getLastPathSegment());
         StorageReference riversRef = dbStorage.child("images/"+file.getLastPathSegment());
         UploadTask uploadTask = riversRef.putFile(file);
@@ -59,7 +61,7 @@ public class ImageHandler {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                crumbPicture.setRemotePicturePath(downloadUrl.getPath());
+//                crumbPicture.setRemotePicturePath(downloadUrl.getPath());
                 activity.onImageUploaded(crumbPicture);
 
             }
@@ -73,6 +75,14 @@ public class ImageHandler {
 
     public interface ImageUploadConsumer{
         void onImageUploaded(CrumbPicture crumbPicture);
+    }
+
+    public static Bitmap getImage(String imageName){
+        File storageDir = new File(MainActivity.ROOT_DIRECTORY);
+        File image = new File(storageDir, imageName);
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+        return bitmap;
     }
 
     public String imageName(){
