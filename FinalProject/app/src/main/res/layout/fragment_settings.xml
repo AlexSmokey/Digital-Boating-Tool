@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    >
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="Update Frequency (seconds)"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center_vertical|start"
+            android:textSize="18sp"
+            />
+        <EditText
+            android:inputType="number"
+            android:id="@+id/etTime"
+            android:textSize="20sp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="seconds"
+            android:gravity="center_vertical|end"
+
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="Update Distance (meters)"
+            android:textSize="18sp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center_vertical|start"
+            />
+        <EditText
+            android:inputType="number"
+            android:id="@+id/etDistance"
+            android:textSize="20sp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="meters"
+            android:gravity="center_vertical|end"
+            />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="*Set values to 0 for fastest, -1 to ignore"
+        android:gravity="center_vertical|start"
+        />
+
+    <LinearLayout
+        android:paddingTop="40dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="Units"
+            android:textSize="18sp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center_vertical|start"
+            />
+        <Switch
+            android:gravity="center_vertical|end"
+            android:id="@+id/sUnits"
+            android:showText="true"
+            android:textOff="Km"
+            android:textOn="Mi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:splitTrack="false"
+            style="@android:style/Widget.Holo.Light.CompoundButton.Switch"
+            android:checked="true" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -24,17 +24,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -45,6 +49,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,6 +57,7 @@ import java.util.HashMap;
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
 import edu.rose_hulman.humphrjm.finalproject.Constants;
 import edu.rose_hulman.humphrjm.finalproject.CustomLatLng;
+import edu.rose_hulman.humphrjm.finalproject.MainActivity;
 import edu.rose_hulman.humphrjm.finalproject.MapProcessing.OnMapAndViewReadyListener;
 import edu.rose_hulman.humphrjm.finalproject.MyLocationListener;
 import edu.rose_hulman.humphrjm.finalproject.R;
@@ -69,7 +75,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
     private final String LIST_KEY = "List_Key";
     private final String MAP_FRAGMENT_TAG = "map";
 
-
+    private TextView tvCurrentDistance;
     private EditText etLat, etLong;
     private Button bSave, bLoad, bAdd;
     private CrumbAdapter crumbAdapter;
@@ -159,7 +165,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 
         } else {
             Log.e("BreadCrumbs", "Location stuff set");
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TEN_SECONDS, METERS, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MainActivity.incrementSeconds, MainActivity.incrementMeters, locationListener);
 
         }
         crumbAdapter = new CrumbAdapter(getContext());
@@ -181,6 +187,9 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 
         etLat = (EditText) view.findViewById(R.id.etLat);
         etLong = (EditText) view.findViewById(R.id.etLong);
+
+        tvCurrentDistance = (TextView) view.findViewById(R.id.tvCurrentDistance);
+        setCurrentDistance(0.0);
 
         bAdd = (Button) view.findViewById(R.id.bAdd);
         bAdd.setOnClickListener(new View.OnClickListener() {
@@ -249,6 +258,9 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
         super.onDestroyView();
 //        Fragment fragment = (getChildFragmentManager().findFragmentById(R.id.mapFragment));
         try {
+            settingsMenuItem.setVisible(false);
+        } catch (Exception e){}
+        try {
 
 
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
@@ -256,6 +268,36 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
             ft.commit();
         }catch (Exception e){}
 
+    }
+
+    MenuItem settingsMenuItem;
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        settingsMenuItem = menu.findItem(R.id.action_settings);
+        settingsMenuItem.setVisible(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, new SettingsFragment());
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
+            fragmentTransaction.addToBackStack("settings");
+            fragmentTransaction.commit();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void setCurrentPosition() {
@@ -277,6 +319,18 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 //        setSupportActionBar(toolbar);
 //
 //    }
+
+    private void setCurrentDistance(double distance){
+        String s;
+
+        if(distance > 1000){
+            String f = String.format("%.2f", (distance/1000));
+            s = f + " Km";
+        } else {
+            s = String.valueOf(distance) + " m";
+        }
+        tvCurrentDistance.setText(getActivity().getResources().getString(R.string.current_distance, s));
+    }
 
     void initGPS() {
 
@@ -404,7 +458,8 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 
     private Marker lastDrawnMarker = null;
 
-    private void drawLines() {
+    private double drawLines() { // returns total distance
+        double totalDistance = 0.0;
         CustomLatLng thisLatLong = null, lastLatLong = null;
         ArrayList<CustomLatLng> list = new ArrayList<>(breadcrumbs.keySet());
         Collections.sort(list);
@@ -412,21 +467,36 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
         for(CustomLatLng c : list){
             lastLatLong = thisLatLong;
             thisLatLong = c;
-            drawLine(lastLatLong, thisLatLong);
+
+            totalDistance += drawLine(lastLatLong, thisLatLong);
         }
+        return totalDistance;
     }
 
-    private void drawLine(CustomLatLng lastL, CustomLatLng thisL) {
+    private double getDistance(LatLng start, LatLng end){
+        Location loc1 = new Location("");
+        loc1.setLatitude(start.latitude);
+        loc1.setLongitude(start.longitude);
+        Location loc2 = new Location("");
+        loc2.setLatitude(end.latitude);
+        loc2.setLongitude(end.longitude);
+        return loc1.distanceTo(loc2);
+    }
+
+    private double drawLine(CustomLatLng lastL, CustomLatLng thisL) { // returns distance between
         if(lastL != null && thisL != null) {
+            LatLng lastLatLng = lastL.getLatLng(), thisLatLng = thisL.getLatLng();
             Log.e("DrawLine","Drawing line between " + lastL.getIndex() + " & " + thisL.getIndex());
-            mMap.addPolyline(new PolylineOptions().add(lastL.getLatLng(), thisL.getLatLng()).width(5).color(Color.RED));
+            mMap.addPolyline(new PolylineOptions().add(lastLatLng, thisLatLng).width(5).color(Color.RED));
+            return getDistance(lastLatLng, thisLatLng);
         }
+        return 0;
     }
 
     private void redrawMarkers() {
         mMap.clear();
         drawMarkers();
-        drawLines();
+        setCurrentDistance(drawLines());
     }
 
     @Override

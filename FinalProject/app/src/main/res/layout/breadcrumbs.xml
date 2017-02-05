@@ -7,7 +7,7 @@
         android:layout_height="wrap_content"
         android:text="Bread Crumbs"
         android:textColor="@color/colorTitle"
-        android:textSize="48sp"
+        android:textSize="36sp"
         android:textAlignment="center"
         android:id="@+id/tvPageTitle"
         android:layout_alignParentTop="true"
@@ -18,8 +18,8 @@
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_gravity="center"
+        android:padding="5dp"
+        android:layout_gravity="center_horizontal"
         android:id="@+id/ll1"
         android:layout_below="@id/tvPageTitle"
         >
@@ -31,6 +31,7 @@
             android:textSize="16sp"
             />
         <EditText
+            android:inputType="numberDecimal"
             android:id="@+id/etLat"
             android:layout_width="0dp"
             android:layout_weight="3"
@@ -47,6 +48,7 @@
             />
 
         <EditText
+            android:inputType="numberDecimal"
             android:id="@+id/etLong"
             android:layout_width="0dp"
             android:layout_weight="3"
@@ -58,7 +60,8 @@
         <ImageButton
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:id="@+id/ibRefresh"
             android:src="@android:drawable/ic_menu_compass"
             android:background="?android:attr/selectableItemBackground"
@@ -72,6 +75,19 @@
         android:layout_below="@id/ll1"
         android:layout_above="@+id/ll2"
         />
+    <TextView
+        android:id="@+id/tvCurrentDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll2"
+        android:layout_alignParentStart="true"
+        android:padding="3dp"
+        android:hint="current distance"
+        android:textSize="18sp"
+        android:background="#CCFFFFFF"
+        android:textColor="@android:color/black"
+        />
+
     <!--<fragment-->
         <!--android:id="@+id/mapFragment"-->
         <!--android:name="edu.rose_hulman.humphrjm.finalproject.MainActivity"-->

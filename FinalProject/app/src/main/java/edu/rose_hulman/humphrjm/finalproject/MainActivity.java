@@ -14,6 +14,9 @@ import edu.rose_hulman.humphrjm.finalproject.fragments.SplashscreenFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static int incrementSeconds = 0;
+    public static int incrementMeters = 0;
+    public static boolean inMeters = false;
 
     public static String ROOT_DIRECTORY;
     public static HashMap<String, String> savedLocalImages;
@@ -50,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
 //        });
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -61,18 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
-        return super.onOptionsItemSelected(item);
-    }
+
 }
