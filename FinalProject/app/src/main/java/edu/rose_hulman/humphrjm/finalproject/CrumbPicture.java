@@ -62,6 +62,25 @@ public class CrumbPicture implements Parcelable{
 //        return localPicturePath;
 //    }
 
+    protected CrumbPicture(Parcel in) {
+        key = in.readString();
+        picturePath = in.readString();
+        pictureTitle = in.readString();
+        pictureNotes = in.readString();
+    }
+
+    public static final Creator<CrumbPicture> CREATOR = new Creator<CrumbPicture>() {
+        @Override
+        public CrumbPicture createFromParcel(Parcel in) {
+            return new CrumbPicture(in);
+        }
+
+        @Override
+        public CrumbPicture[] newArray(int size) {
+            return new CrumbPicture[size];
+        }
+    };
+
     @Exclude
     public String getKey() {
         return key;

@@ -21,6 +21,26 @@ public class BreadCrumb implements Parcelable{
 
     public BreadCrumb(){}
 
+    protected BreadCrumb(Parcel in) {
+        key = in.readString();
+        customLocation = in.readParcelable(CustomLocation.class.getClassLoader());
+        name = in.readString();
+        pictures = in.createTypedArrayList(CrumbPicture.CREATOR);
+        notes = in.readString();
+    }
+
+    public static final Creator<BreadCrumb> CREATOR = new Creator<BreadCrumb>() {
+        @Override
+        public BreadCrumb createFromParcel(Parcel in) {
+            return new BreadCrumb(in);
+        }
+
+        @Override
+        public BreadCrumb[] newArray(int size) {
+            return new BreadCrumb[size];
+        }
+    };
+
     @Exclude
     public String getKey() {
         return key;

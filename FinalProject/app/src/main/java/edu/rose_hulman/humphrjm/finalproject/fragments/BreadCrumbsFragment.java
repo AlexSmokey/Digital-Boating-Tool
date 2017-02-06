@@ -462,25 +462,28 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
                         .setNegativeButton(R.string.cancel_delete, null)
                         .setPositiveButton(R.string.yes_delete, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                Collection<BreadCrumb> crumbSet = breadcrumbs.values();
-                                BreadCrumb tempCrumb = null;
-                                for (BreadCrumb c: crumbSet) {
-                                    if (c.getKey().equals(marker.getSnippet())) {
-                                        tempCrumb = c;
-                                        break;
-                                    }
-                                }
+//                                BreadCrumb tempCrumb = null;
+//                                int tempIndex = index + 1;
+//                                for (CustomLatLng c : breadcrumbs.keySet()) {
+//                                    if (c.getKey().equals(marker.getSnippet())) {
+//                                        tempCrumb = breadcrumbs.get(c);
+//                                        tempIndex = c.getIndex();
+//                                        break;
+//                                    }
+//                                }
                                 deleteCrumb(marker.getSnippet());
-                                marker.remove();
-                                final BreadCrumb finalTempCrumb = tempCrumb;
-                                Snackbar.make(getView(), R.string.after_deletion, Snackbar.LENGTH_LONG);
-//                                        .setAction("UNDO", new View.OnClickListener() {
-//                                            @Override
-//                                            public void onClick(View v) {
-//                                                if (finalTempCrumb != null)
-//                                                    breadCrumbReference.push().setValue(finalTempCrumb);
-//                                            }
-//                                        }).show();
+//                                final BreadCrumb finalTempCrumb = tempCrumb;
+                                Snackbar.make(getView(), R.string.after_deletion, Snackbar.LENGTH_LONG)
+//                                       .setAction("UNDO", new View.OnClickListener() {
+//                                                   @Override
+//                                                   public void onClick(View v) {
+//                                                       if (finalTempCrumb != null) {
+//                                                           breadCrumbReference.push().setValue(finalTempCrumb);
+//
+//                                                       }
+//                                                   }
+//                                               })
+                                        .show();
                             }
                         })
                         .setIcon(android.R.drawable.ic_dialog_alert)
@@ -629,6 +632,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 
     public void deleteCrumb(String c) {
         breadCrumbReference.child(c).removeValue();
+
     }
 
     private class CrumbsChildEventListener implements ChildEventListener {
@@ -679,15 +683,15 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
             String key = dataSnapshot.getKey();
-            BreadCrumb newCrumb = dataSnapshot.getValue(BreadCrumb.class);
-            newCrumb.setKey(key);
-            crumbAdapter.removeCrumb(newCrumb);
-            CustomLatLng customLatLng = newCrumb.getCustomLatLng();
-            if (breadcrumbs.containsKey(customLatLng)) {
-                breadcrumbs.remove(customLatLng);
-                redrawMarkers();
+            crumbAdapter.removeCrumb(key);
+            Log.d("REMOVE", key);
+            for (CustomLatLng custLatLong : breadcrumbs.keySet()) {
+                if (breadcrumbs.get(custLatLong).getKey().equals(key)) {
+                    breadcrumbs.remove(custLatLong);
+                    break;
+                }
             }
-
+            redrawMarkers();
         }
 
         @Override

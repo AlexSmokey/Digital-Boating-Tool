@@ -92,6 +92,16 @@ public class CrumbAdapter extends RecyclerView.Adapter<CrumbAdapter.ViewHolder> 
         }
     }
 
+    public void removeCrumb(String c){
+        for(BreadCrumb breadCrumb : crumbs){
+            if(c.equals(breadCrumb.getKey())){
+                crumbs.remove(breadCrumb);
+                notifyDataSetChanged();
+                return;
+            }
+        }
+    }
+
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView Name;
