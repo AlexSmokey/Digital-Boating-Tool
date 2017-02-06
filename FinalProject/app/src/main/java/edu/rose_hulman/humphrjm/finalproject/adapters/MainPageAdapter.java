@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import edu.rose_hulman.humphrjm.finalproject.MainPageOption;
 import edu.rose_hulman.humphrjm.finalproject.R;
 import edu.rose_hulman.humphrjm.finalproject.fragments.BreadCrumbsFragment;
+import edu.rose_hulman.humphrjm.finalproject.fragments.etcFragment;
 
 /**
  * Created by humphrjm on 1/16/2017.
@@ -29,8 +30,8 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 
     public MainPageAdapter(Context context) {
         this.context = context;
-        mainPageOptions.add(new MainPageOption("Bread Crumbs","desc...", R.mipmap.ic_launcher, R.layout.breadcrumbs, new BreadCrumbsFragment()));
-        mainPageOptions.add(new MainPageOption("TBA","desc...", R.mipmap.ic_launcher, -1, null));
+        mainPageOptions.add(new MainPageOption("Bread Crumbs","Tool for making digital markers on a map with descriptions and pictures in order to find one's way back", R.mipmap.ic_launcher, R.layout.breadcrumbs, new BreadCrumbsFragment()));
+        mainPageOptions.add(new MainPageOption("TBA","Coming Soon", R.mipmap.ic_launcher, R.layout.etc_info, new etcFragment()));
         notifyDataSetChanged();
     }
 
