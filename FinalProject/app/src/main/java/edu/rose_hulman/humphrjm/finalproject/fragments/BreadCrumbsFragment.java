@@ -333,7 +333,8 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
         } else {
             s = String.valueOf(distance) + " m";
         }
-        tvCurrentDistance.setText(getString(R.string.current_distance_2) + s);
+        if (getActivity() != null)
+            tvCurrentDistance.setText(getActivity().getString(R.string.current_distance_2) + s);
     }
 
     void initGPS() {
