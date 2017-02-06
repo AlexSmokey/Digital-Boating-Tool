@@ -14,4 +14,8 @@
     <string name="cont">Continue</string>
     <string name="shake_message">Reset Latitude and Longitude?</string>
     <string name="current_distance">Current Distance: %s</string>
+    <string name="delete_marker_title">DELETE?</string>
+    <string name="delete_breadcrumb_message">Are you sure you want to delete this breadcrumb?</string>
+    <string name="cancel_delete">Cancel</string>
+    <string name="yes_delete">DELETE</string>
 </resources>

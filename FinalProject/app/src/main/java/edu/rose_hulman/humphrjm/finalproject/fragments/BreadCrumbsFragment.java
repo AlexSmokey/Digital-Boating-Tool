@@ -51,8 +51,12 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
 import edu.rose_hulman.humphrjm.finalproject.Constants;
@@ -411,6 +415,42 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(final Marker marker) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.delete_marker_title)
+                        .setMessage(R.string.delete_breadcrumb_message)
+                        .setNegativeButton(R.string.cancel_delete, null)
+                        .setPositiveButton(R.string.yes_delete, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteCrumb(marker.getSnippet());
+                                marker.remove();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+                if (marker != null) {
+                    LatLng loc = null;
+                    Collection<BreadCrumb> crumbSet = breadcrumbs.values();
+                    for (BreadCrumb c: crumbSet) {
+                        if (c.getKey().equals(marker.getSnippet())) {
+                            marker.setPosition(c.getCustomLatLng().getLatLng());
+                            return;
+                        }
+                    }
+                }
+            }
+        });
         mMap.getUiSettings().setZoomControlsEnabled(false);
 //        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
         mMap.setOnMarkerClickListener(this);
@@ -445,7 +485,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 //            longMax = longVal;
 //        }
         lastMarkerClicked = null;
-        mMap.addMarker(new MarkerOptions().position(latLng.getLatLng()).title(latLng.getName()).snippet(latLng.getKey()));
+        mMap.addMarker(new MarkerOptions().position(latLng.getLatLng()).draggable(true).title(latLng.getName()).snippet(latLng.getKey()));
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (CustomLatLng customLatLng : breadcrumbs.keySet()) {
             builder.include(customLatLng.getLatLng());
@@ -531,6 +571,11 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 
 
     private int index = 0;
+
+    public void deleteCrumb(String c) {
+        breadCrumbReference.child(c).removeValue();
+    }
+
     private class CrumbsChildEventListener implements ChildEventListener {
 
         @Override
