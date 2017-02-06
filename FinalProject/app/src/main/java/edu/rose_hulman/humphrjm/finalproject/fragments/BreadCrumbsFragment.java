@@ -424,8 +424,25 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
                         .setNegativeButton(R.string.cancel_delete, null)
                         .setPositiveButton(R.string.yes_delete, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                Collection<BreadCrumb> crumbSet = breadcrumbs.values();
+                                BreadCrumb tempCrumb = null;
+                                for (BreadCrumb c: crumbSet) {
+                                    if (c.getKey().equals(marker.getSnippet())) {
+                                        tempCrumb = c;
+                                        break;
+                                    }
+                                }
                                 deleteCrumb(marker.getSnippet());
                                 marker.remove();
+                                final BreadCrumb finalTempCrumb = tempCrumb;
+                                Snackbar.make(getView(), R.string.after_deletion, Snackbar.LENGTH_LONG);
+//                                        .setAction("UNDO", new View.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(View v) {
+//                                                if (finalTempCrumb != null)
+//                                                    breadCrumbReference.push().setValue(finalTempCrumb);
+//                                            }
+//                                        }).show();
                             }
                         })
                         .setIcon(android.R.drawable.ic_dialog_alert)

@@ -18,4 +18,5 @@
     <string name="delete_breadcrumb_message">Are you sure you want to delete this breadcrumb?</string>
     <string name="cancel_delete">Cancel</string>
     <string name="yes_delete">DELETE</string>
+    <string name="after_deletion">Breadcrumb Deleted</string>
 </resources>
