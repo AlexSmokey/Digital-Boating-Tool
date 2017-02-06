@@ -424,6 +424,35 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
             }
         });
 
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(final LatLng latLng) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.long_create_title)
+                        .setMessage(R.string.long_create_message)
+                        .setNegativeButton(R.string.add_cancel, null)
+                        .setPositiveButton(R.string.long_create, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    float lat = (float)latLng.latitude;
+                                    float lon = (float)latLng.longitude;
+                                    Location loc = new Location("");
+                                    loc.setLatitude(lat);
+                                    loc.setLongitude(lon);
+                                    loc.setTime(System.nanoTime());
+                                    BreadCrumb c = new BreadCrumb(loc, lat + " " + lon);
+                                    breadCrumbReference.push().setValue(c);
+                                } catch (Exception e) {
+                                    Log.e("BOAT", "Breadcrumb could not be made " + e.getMessage());
+                                }
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+            }
+        });
+
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(final Marker marker) {

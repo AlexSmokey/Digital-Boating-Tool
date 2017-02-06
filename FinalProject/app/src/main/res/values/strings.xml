@@ -19,4 +19,8 @@
     <string name="cancel_delete">Cancel</string>
     <string name="yes_delete">DELETE</string>
     <string name="after_deletion">Breadcrumb Deleted</string>
+    <string name="long_create_title">CREATE NEW BREADCRUMB?</string>
+    <string name="long_create_message">Do you want to create a new Breadcrumb where you just clicked?</string>
+    <string name="add_cancel">CANCEL</string>
+    <string name="long_create">CREATE</string>
 </resources>
