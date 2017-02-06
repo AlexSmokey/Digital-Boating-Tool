@@ -415,6 +415,15 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                etLat.setText(String.valueOf(latLng.latitude));
+                etLong.setText(String.valueOf(latLng.longitude));
+            }
+        });
+
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(final Marker marker) {
