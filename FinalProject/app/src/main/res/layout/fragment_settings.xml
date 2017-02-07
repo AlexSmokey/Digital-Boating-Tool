@@ -36,6 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
+            android:id="@+id/tvSettingsDistance"
             android:text="Update Distance (meters)"
             android:textSize="18sp"
             android:layout_width="0dp"
@@ -50,14 +51,14 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:hint="meters"
+            android:hint="feet/meters"
             android:gravity="center_vertical|end"
             />
     </LinearLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="*Set values to 0 for fastest, -1 to ignore"
+        android:text="*Set 0 distance to ignore distance (better for battery), 0 time for fastest"
         android:gravity="center_vertical|start"
         />
 
@@ -81,10 +82,12 @@
             android:textOff="Km"
             android:textOn="Mi"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:splitTrack="false"
-            style="@android:style/Widget.Holo.Light.CompoundButton.Switch"
+
             android:checked="true" />
+            <!--style="@android:style/Widget.Holo.Light.CompoundButton.Switch"-->
+
     </LinearLayout>
 
 </LinearLayout>

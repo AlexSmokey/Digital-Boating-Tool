@@ -10,13 +10,12 @@ import android.view.MenuItem;
 
 import java.util.HashMap;
 
+import edu.rose_hulman.humphrjm.finalproject.fragments.SettingsFragment;
 import edu.rose_hulman.humphrjm.finalproject.fragments.SplashscreenFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static int incrementSeconds = 0;
-    public static int incrementMeters = 0;
-    public static boolean inMeters = false;
+
 
     public static String ROOT_DIRECTORY;
     public static HashMap<String, String> savedLocalImages;
@@ -24,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         ROOT_DIRECTORY =  getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
 //        savedLocalImages = new HashMap<>();
 //        FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -58,6 +58,29 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, new SettingsFragment());
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
+            fragmentTransaction.addToBackStack("settings");
+            fragmentTransaction.commit();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 
