@@ -1,9 +1,12 @@
 package edu.rose_hulman.humphrjm.finalproject;
 
+import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
+
+import edu.rose_hulman.humphrjm.finalproject.fragments.BreadCrumbsFragment;
 
 /**
  * Created by humphrjm on 1/22/2017.
@@ -12,12 +15,22 @@ import android.util.Log;
 public class MyLocationListener implements LocationListener{
 
     private Location myLocation;
+    private LocationHandler callback;
+
+    public MyLocationListener(BreadCrumbsFragment c){
+        callback = (LocationHandler) c;
+    }
 
     @Override
     public void onLocationChanged(Location location) {
         if(location != null){
 //            Log.e("Location",location.toString());
             this.myLocation = location;
+            try {
+                callback.onLocationUpdated(location);
+            }catch (Exception e){
+                Log.e("LocationChangedCall",e.toString());
+            }
         }else {
             Log.e("Location","null");
         }
@@ -40,5 +53,9 @@ public class MyLocationListener implements LocationListener{
 
     public Location getLocation() {
         return myLocation;
+    }
+
+    public interface LocationHandler{
+        void onLocationUpdated(Location location);
     }
 }

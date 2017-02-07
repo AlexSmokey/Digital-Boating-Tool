@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -30,9 +31,13 @@ public class SettingsFragment extends Fragment implements TextWatcher, CompoundB
     private EditText etTime;
     private TextView tvDistance;
     private Switch sUnits;
+    private CheckBox cbAuto;
     private SharedPreferences sharedPreferences;
     private boolean imperial;
-    private MenuItem miSettings;
+
+    private int seconds;
+    private float meters;
+    private boolean autoCrumb;
 
     public SettingsFragment() {
     }
@@ -43,7 +48,9 @@ public class SettingsFragment extends Fragment implements TextWatcher, CompoundB
         setHasOptionsMenu(true);
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE);
         imperial = sharedPreferences.getBoolean(Constants.KEY_IMPERIAL, false);
-
+        seconds = sharedPreferences.getInt(Constants.KEY_TIME, 0);
+        meters = sharedPreferences.getFloat(Constants.KEY_DISTANCE,0);
+        autoCrumb = sharedPreferences.getBoolean(Constants.KEY_AUTO, false);
     }
 
     @Override
@@ -59,8 +66,16 @@ public class SettingsFragment extends Fragment implements TextWatcher, CompoundB
         etTime = (EditText) view.findViewById(R.id.etTime);
         etDistance = (EditText) view.findViewById(R.id.etDistance);
         sUnits = (Switch) view.findViewById(R.id.sUnits);
-        float dist = sharedPreferences.getInt(Constants.KEY_DISTANCE, 0);
-        etTime.setText(String.valueOf(sharedPreferences.getInt(Constants.KEY_TIME, 0)));
+        cbAuto = (CheckBox) view.findViewById(R.id.cbAuto);
+        cbAuto.setChecked(autoCrumb);
+        cbAuto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                autoCrumb = isChecked;
+            }
+        });
+        etTime.setText(String.valueOf(seconds));
+        float dist = meters;
         if(imperial){
             dist *= Constants.FEET_PER_METER;
             tvDistance.setText("Distance (feet)");
@@ -76,6 +91,16 @@ public class SettingsFragment extends Fragment implements TextWatcher, CompoundB
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.KEY_AUTO, autoCrumb);
+        editor.putBoolean(Constants.KEY_IMPERIAL, imperial);
+        editor.putFloat(Constants.KEY_DISTANCE, meters);
+        editor.putInt(Constants.KEY_TIME, seconds);
+        editor.apply();
+        super.onDestroyView();
+    }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -89,31 +114,27 @@ public class SettingsFragment extends Fragment implements TextWatcher, CompoundB
 
     @Override
     public void afterTextChanged(Editable s) {
-        float dist = sharedPreferences.getInt(Constants.KEY_DISTANCE,0);
-        if(imperial){
-            dist *= Constants.FEET_PER_METER;
-        }
-        int time = sharedPreferences.getInt(Constants.KEY_TIME,0);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         try {
-            dist = Integer.parseInt(etDistance.getText().toString());
+            float f = Float.valueOf(etDistance.getText().toString());
             if(imperial){
-                dist /= Constants.FEET_PER_METER;
+                f /= Constants.FEET_PER_METER;
             }
-            editor.putFloat(Constants.KEY_DISTANCE, dist);
-
+            meters = f;
+        } catch( Exception ex){
+            if(imperial) {
+                etDistance.setText(String.format("%.2f",meters * Constants.FEET_PER_METER));
+            } else {
+                etDistance.setText(String.valueOf(meters));
+            }
+        }
+        try{
+            seconds = Integer.valueOf(etTime.getText().toString());
         } catch (Exception e){
-            etDistance.setText(String.valueOf(dist));
+            etTime.setText(String.valueOf(seconds));
         }
-        try {
-            time = Integer.parseInt(etTime.getText().toString());
-            editor.putInt(Constants.KEY_TIME, time);
-        } catch (Exception ex){
-            etTime.setText(String.valueOf(time));
-        }
-        editor.apply();
-
     }
+
+
 
     private void updateDist(){
 
@@ -121,12 +142,13 @@ public class SettingsFragment extends Fragment implements TextWatcher, CompoundB
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
         imperial = isChecked;
         if(imperial){
             tvDistance.setText("Distance (feet)");
         } else {
             tvDistance.setText("Distance (meters)");
         }
-        sharedPreferences.edit().putBoolean(Constants.KEY_IMPERIAL, isChecked).apply();
+
     }
 }

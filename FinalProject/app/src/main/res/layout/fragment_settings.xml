@@ -89,5 +89,13 @@
             <!--style="@android:style/Widget.Holo.Light.CompoundButton.Switch"-->
 
     </LinearLayout>
+    <CheckBox
+        android:id="@+id/cbAuto"
+        android:padding="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Auto Generate Crumbs (beta)"
+
+        />
 
 </LinearLayout>

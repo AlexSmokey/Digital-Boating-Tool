@@ -67,7 +67,7 @@ import edu.rose_hulman.humphrjm.finalproject.CustomLocation;
 /**
  * Created by goebelag on 1/15/2017.
  */
-public class BreadCrumbsFragment extends Fragment implements SensorEventListener, OnMapReadyCallback, OnMapAndViewReadyListener.OnGlobalLayoutAndMapReadyListener, GoogleMap.OnMarkerClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
+public class BreadCrumbsFragment extends Fragment implements SensorEventListener, OnMapReadyCallback, OnMapAndViewReadyListener.OnGlobalLayoutAndMapReadyListener, GoogleMap.OnMarkerClickListener, SharedPreferences.OnSharedPreferenceChangeListener, MyLocationListener.LocationHandler {
 
     private final long TEN_SECONDS = 0; // frequency to pull location
     private final long METERS = 0; // difference in meters to pull location
@@ -92,6 +92,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
     private GoogleMap mMap;
     private SupportMapFragment supportMapFragment;
     private HashMap<CustomLatLng, BreadCrumb> breadcrumbs = new HashMap<>();
+    private SharedPreferences sharedPreferences;
 
 
     private void dbInit() {
@@ -138,6 +139,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
     }
 
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,29 +149,12 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
         mAccel = 0.00f;
         mAccelCurrent = SensorManager.GRAVITY_EARTH;
         mAccelLast = SensorManager.GRAVITY_EARTH;
-        locationListener = new MyLocationListener();
+        locationListener = new MyLocationListener(this);
 //        if (savedInstanceState != null)
 //            crumbs = savedInstanceState.getParcelableArrayList(LIST_KEY);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    Constants.GPS_REQUEST_CODE);
 
-
-        } else {
-            Log.e("BreadCrumbs", "Location stuff set");
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
-        }
         crumbAdapter = new CrumbAdapter(getContext());
-
+        sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE);
 
     }
 
@@ -184,9 +169,14 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 //        crumbAdapter.setCrumbs((ArrayList<BreadCrumb>)crumbs.clone());
         recyclerView.setAdapter(crumbAdapter);
 
+        boolean autoMode = sharedPreferences.getBoolean(Constants.KEY_AUTO, false);
 
+        Log.e("AutoModeETToggle","Auto Mode: " + autoMode);
         etLat = (EditText) view.findViewById(R.id.etLat);
         etLong = (EditText) view.findViewById(R.id.etLong);
+
+        etLat.setEnabled(!autoMode);
+        etLong.setEnabled(!autoMode);
 
         tvCurrentDistance = (TextView) view.findViewById(R.id.tvCurrentDistance);
         setCurrentDistance(0.0);
@@ -250,12 +240,43 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
         recyclerView.setVisibility(View.GONE);
 
         mapInit();
+
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    Constants.GPS_REQUEST_CODE);
+
+
+        } else {
+            Log.e("BreadCrumbs", "Location stuff set");
+
+            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+            float dist = sharedPreferences.getFloat(Constants.KEY_DISTANCE, 0);
+            int seconds = sharedPreferences.getInt(Constants.KEY_TIME, 0);
+//            boolean imperial = sharedPreferences.getBoolean(Constants.KEY_IMPERIAL, false);
+
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, seconds * 1000, Math.round(dist), locationListener);
+
+        }
         return view;
     }
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+        try{
+            Log.e("UnregisterSharedPref","Unregistering...");
+            sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        }catch(Exception e){
+            Log.e("UnregisterSharedPref",e.toString());
+        }
+
 //        Fragment fragment = (getChildFragmentManager().findFragmentById(R.id.mapFragment));
 
         try {
@@ -264,7 +285,10 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
             ft.remove(supportMapFragment);
             ft.commit();
-        }catch (Exception e){}
+        }catch (Exception e){
+            Log.e("RemoveMapFrag", e.toString());
+        }
+        super.onDestroyView();
 
     }
 
@@ -618,6 +642,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
         boolean imperial = sharedPreferences.getBoolean(Constants.KEY_IMPERIAL, false);
         float distance = sharedPreferences.getFloat(Constants.KEY_DISTANCE, 0);
         int seconds = sharedPreferences.getInt(Constants.KEY_TIME, 0);
+        boolean autoUpdate = sharedPreferences.getBoolean(Constants.KEY_AUTO, false);
         if(imperial){
             distance /= 0.3048; // number of meters per feet
         }
@@ -627,9 +652,29 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
         } catch (SecurityException se){
 
         }
+        etLat.setEnabled(!autoUpdate);
+        etLong.setEnabled(!autoUpdate);
 
         redrawMap();
 
+    }
+
+    @Override
+    public void onLocationUpdated(Location location) {
+        etLat.setText(String.valueOf(location.getLatitude()));
+        etLong.setText(String.valueOf(location.getLongitude()));
+        Log.e("LocationUpdated",location.toString());
+        if(sharedPreferences.getBoolean(Constants.KEY_AUTO, false)){
+            float lat = (float)location.getLatitude();
+            float lon = (float)location.getLongitude();
+            Location loc = new Location("");
+            loc.setLatitude(lat);
+            loc.setLongitude(lon);
+            loc.setTime(System.nanoTime());
+            BreadCrumb c = new BreadCrumb(loc, lat + " " + lon);
+            //                    crumbs.add(c);
+            breadCrumbReference.push().setValue(c);
+        }
     }
 
     private class CrumbsChildEventListener implements ChildEventListener {

@@ -20,6 +20,7 @@ public class Constants {
     public static final String KEY_IMPERIAL = "IMPERIAL";
     public static final String KEY_DISTANCE = "DISTANCE";
     public static final String KEY_TIME = "TIME";
+    public static final String KEY_AUTO = "AUTO_MODE";
 
     public static final float FEET_PER_METER = 3.28084f;
 
