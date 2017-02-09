@@ -2,6 +2,7 @@ package edu.rose_hulman.humphrjm.finalproject;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,11 +19,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static String ROOT_DIRECTORY;
+    public static String ANDROID_ID;
     public static HashMap<String, String> savedLocalImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ANDROID_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         ROOT_DIRECTORY =  getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
 //        savedLocalImages = new HashMap<>();

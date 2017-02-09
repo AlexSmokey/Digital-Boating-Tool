@@ -58,6 +58,7 @@ import java.util.HashMap;
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
 import edu.rose_hulman.humphrjm.finalproject.Constants;
 import edu.rose_hulman.humphrjm.finalproject.CustomLatLng;
+import edu.rose_hulman.humphrjm.finalproject.MainActivity;
 import edu.rose_hulman.humphrjm.finalproject.MapProcessing.OnMapAndViewReadyListener;
 import edu.rose_hulman.humphrjm.finalproject.MyLocationListener;
 import edu.rose_hulman.humphrjm.finalproject.R;
@@ -96,7 +97,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 
 
     private void dbInit() {
-        breadCrumbReference = FirebaseDatabase.getInstance().getReference().child("crumbs");
+        breadCrumbReference = FirebaseDatabase.getInstance().getReference().child(MainActivity.ANDROID_ID).child("crumbs");
         breadCrumbReference.addChildEventListener(new CrumbsChildEventListener());
     }
 
@@ -104,7 +105,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 //        supportMapFragment = SupportMapFragment.newInstance();
         breadcrumbs.clear();
         index = 0;
-        SupportMapFragment supportMapFragment = (SupportMapFragment)
+        supportMapFragment = (SupportMapFragment)
                 getChildFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
 
         // We only create a fragment if it doesn't already exist.

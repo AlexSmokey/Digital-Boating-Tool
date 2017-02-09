@@ -56,6 +56,7 @@ import java.util.HashMap;
 
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
 import edu.rose_hulman.humphrjm.finalproject.CrumbPicture;
+import edu.rose_hulman.humphrjm.finalproject.MainActivity;
 import edu.rose_hulman.humphrjm.finalproject.MainPageOption;
 import edu.rose_hulman.humphrjm.finalproject.MapProcessing.OnMapAndViewReadyListener;
 import edu.rose_hulman.humphrjm.finalproject.MyLocationListener;
@@ -82,7 +83,7 @@ public class CrumbFragment extends Fragment {
 
 
     private void dbInit(){
-        crumbRef = FirebaseDatabase.getInstance().getReference().child("crumbs").child(crumb.getKey());
+        crumbRef = FirebaseDatabase.getInstance().getReference().child(MainActivity.ANDROID_ID).child("crumbs").child(crumb.getKey());
         crumbRef.addValueEventListener(new CrumbDetailValueEventListener());
     }
 

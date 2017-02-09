@@ -57,7 +57,7 @@ public class ImageAdapter extends BaseAdapter implements DownloadImageTask.Image
 
         pictureList.add(null);
         notifyDataSetChanged();
-        pictureRef = FirebaseDatabase.getInstance().getReference().child("crumbs").child(breadCrumbKey).child("pictures");
+        pictureRef = FirebaseDatabase.getInstance().getReference().child(MainActivity.ANDROID_ID).child("crumbs").child(breadCrumbKey).child("pictures");
         pictureRef.addChildEventListener(new CrumbChildEventListener());
     }
 

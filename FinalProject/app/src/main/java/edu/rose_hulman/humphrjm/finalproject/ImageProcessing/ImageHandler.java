@@ -43,7 +43,7 @@ public class ImageHandler {
 
     public static void uploadImage(final CrumbPicture crumbPicture, final ImageUploadConsumer activity){
 
-        dbStorage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://digital-boating-tool.appspot.com");
+        dbStorage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://digital-boating-tool.appspot.com").child(MainActivity.ANDROID_ID);
         Uri file = Uri.fromFile(new File(MainActivity.ROOT_DIRECTORY, crumbPicture.getPicturePath()));
 //        Log.e("Upload Path",Constants.DB_STORAGE_ROOT.getPath() + "/images/" + file.getLastPathSegment());
         StorageReference riversRef = dbStorage.child("images/"+file.getLastPathSegment());

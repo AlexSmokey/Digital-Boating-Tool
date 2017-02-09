@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import edu.rose_hulman.humphrjm.finalproject.Constants;
+import edu.rose_hulman.humphrjm.finalproject.MainActivity;
 
 /**
  * Created by humphrjm on 1/31/2017.
@@ -39,7 +40,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Void>{
         }
         try {
 
-            StorageReference dbRoot = FirebaseStorage.getInstance().getReferenceFromUrl("gs://digital-boating-tool.appspot.com").child("images");
+            StorageReference dbRoot = FirebaseStorage.getInstance().getReferenceFromUrl("gs://digital-boating-tool.appspot.com").child(MainActivity.ANDROID_ID).child("images");
             StorageReference storageReference = dbRoot.child(imagePath);
 
             Log.e("DoInBackground","Image Path: " + imagePath);

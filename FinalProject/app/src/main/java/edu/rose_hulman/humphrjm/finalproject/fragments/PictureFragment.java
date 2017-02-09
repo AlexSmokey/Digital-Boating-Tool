@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
 import edu.rose_hulman.humphrjm.finalproject.CrumbPicture;
+import edu.rose_hulman.humphrjm.finalproject.MainActivity;
 import edu.rose_hulman.humphrjm.finalproject.R;
 
 /**
@@ -38,7 +39,7 @@ public class PictureFragment extends Fragment {
     private String breadCrumbKey;
 
     private void initDB(){
-        imgRef = FirebaseDatabase.getInstance().getReference().child("crumbs").child(breadCrumbKey).child("pictures").child(crumbPicture.getKey());
+        imgRef = FirebaseDatabase.getInstance().getReference().child(MainActivity.ANDROID_ID).child("crumbs").child(breadCrumbKey).child("pictures").child(crumbPicture.getKey());
         imgRef.addValueEventListener(new PictureValueEventListener());
     }
 
