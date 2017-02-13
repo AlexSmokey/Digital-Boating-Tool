@@ -60,7 +60,7 @@ public class PicDrawView extends ImageView implements View.OnTouchListener{
     {
         canvas = new Canvas(alteredBitmap );
         paint = new Paint();
-        paint.setColor(Color.BLACK);
+        paint.setColor(Color.RED);
         paint.setStrokeWidth(5);
         matrix = new Matrix();
         this.altBitMap = alteredBitmap;
