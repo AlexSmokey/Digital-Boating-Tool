@@ -3,6 +3,7 @@ package edu.rose_hulman.humphrjm.finalproject.fragments;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -37,6 +39,7 @@ import edu.rose_hulman.humphrjm.finalproject.ImageProcessing.ImageHandler;
 import edu.rose_hulman.humphrjm.finalproject.MainActivity;
 import edu.rose_hulman.humphrjm.finalproject.PicDrawView;
 import edu.rose_hulman.humphrjm.finalproject.R;
+import edu.rose_hulman.humphrjm.finalproject.adapters.ImageAdapter;
 
 import static android.support.v4.content.PermissionChecker.PERMISSION_DENIED;
 
@@ -168,24 +171,30 @@ public class PictureFragment extends Fragment {
         }
         Bitmap bmp = overlay(imageView.getbitMap(), imageView.getAltBitMap());
 
+        File photoFile = new File(MainActivity.ROOT_DIRECTORY, crumbPicture.getPicturePath());
 
+        photoFile.delete();
+        photoFile = new File(MainActivity.ROOT_DIRECTORY, crumbPicture.getPicturePath());
 
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(photoFile);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
+        ImageHandler.uploadImage(crumbPicture, null);
 
 
 

@@ -62,7 +62,9 @@ public class ImageHandler {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
 //                crumbPicture.setRemotePicturePath(downloadUrl.getPath());
-                activity.onImageUploaded(crumbPicture);
+                if(activity != null) {
+                    activity.onImageUploaded(crumbPicture);
+                }
 
             }
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
