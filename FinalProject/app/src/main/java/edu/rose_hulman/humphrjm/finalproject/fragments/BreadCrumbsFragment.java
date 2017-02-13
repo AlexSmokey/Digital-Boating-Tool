@@ -416,9 +416,8 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
     public void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
 
-        if (getActivity() == null && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (getActivity() != null && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
-            return;
         }
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -552,8 +551,12 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
         for (CustomLatLng customLatLng : breadcrumbs.keySet()) {
             builder.include(customLatLng.getLatLng());
         }
+        Location location = ((MyLocationListener) locationListener).getLocation();
+        if(location != null) {
+            builder.include(new LatLng(location.getLatitude(), location.getLongitude()));
+        }
         LatLngBounds bounds = builder.build();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 20);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100);
         mMap.animateCamera(cameraUpdate);
 
     }
