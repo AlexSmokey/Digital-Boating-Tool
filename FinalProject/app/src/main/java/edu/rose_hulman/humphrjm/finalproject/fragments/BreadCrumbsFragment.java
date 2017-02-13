@@ -318,7 +318,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 
     private void setCurrentDistance(double distance){
         String s;
-        if(!getActivity().getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE).getBoolean(Constants.KEY_IMPERIAL, false)) {
+        if(getActivity() != null && !getActivity().getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE).getBoolean(Constants.KEY_IMPERIAL, false)) {
 
             if (distance > 1000) {
                 String f = String.format("%.2f", (distance / 1000));

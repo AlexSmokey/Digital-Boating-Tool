@@ -24,4 +24,7 @@
     <string name="add_cancel">CANCEL</string>
     <string name="long_create">CREATE</string>
     <string name="current_distance_2">Current Distance: </string>
+    <string name="error_act">Activity could not be found!!!!!!!!!!!!!!!!</string>
+    <string name="boat_tag">BOAT</string>
+    <string name="no_permission">Permission NOT granted</string>
 </resources>

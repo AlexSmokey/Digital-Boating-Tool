@@ -25,7 +25,7 @@
         android:layout_alignParentTop="true"
 
         />
-    <ImageView
+    <edu.rose_hulman.humphrjm.finalproject.PicDrawView
         android:layout_below="@id/etEditTitle"
         android:layout_above="@+id/etEditNotes"
         android:padding="3dp"
@@ -43,4 +43,5 @@
         android:hint="Notes Go Here\nNotes Go Here\nNotes Go Here"
         android:lines="3"
         />
+
 </RelativeLayout>
