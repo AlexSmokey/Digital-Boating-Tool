@@ -140,7 +140,6 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
     }
 
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,7 +171,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 
         boolean autoMode = sharedPreferences.getBoolean(Constants.KEY_AUTO, false);
 
-        Log.e("AutoModeETToggle","Auto Mode: " + autoMode);
+        Log.e("AutoModeETToggle", "Auto Mode: " + autoMode);
         etLat = (EditText) view.findViewById(R.id.etLat);
         etLong = (EditText) view.findViewById(R.id.etLong);
 
@@ -271,11 +270,11 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 
     @Override
     public void onDestroyView() {
-        try{
-            Log.e("UnregisterSharedPref","Unregistering...");
+        try {
+            Log.e("UnregisterSharedPref", "Unregistering...");
             sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-        }catch(Exception e){
-            Log.e("UnregisterSharedPref",e.toString());
+        } catch (Exception e) {
+            Log.e("UnregisterSharedPref", e.toString());
         }
 
 //        Fragment fragment = (getChildFragmentManager().findFragmentById(R.id.mapFragment));
@@ -286,14 +285,12 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
             ft.remove(supportMapFragment);
             ft.commit();
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("RemoveMapFrag", e.toString());
         }
         super.onDestroyView();
 
     }
-
-
 
 
     public void setCurrentPosition() {
@@ -316,9 +313,9 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 //
 //    }
 
-    private void setCurrentDistance(double distance){
+    private void setCurrentDistance(double distance) {
         String s;
-        if(getActivity() != null && !getActivity().getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE).getBoolean(Constants.KEY_IMPERIAL, false)) {
+        if (getActivity() != null && !getActivity().getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE).getBoolean(Constants.KEY_IMPERIAL, false)) {
 
             if (distance > 1000) {
                 String f = String.format("%.2f", (distance / 1000));
@@ -328,8 +325,8 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
             }
         } else {
             distance = distance * Constants.FEET_PER_METER;
-            if(distance > 5280){
-                s = String.format("%.2f", distance/5280) + " Mi";
+            if (distance > 5280) {
+                s = String.format("%.2f", distance / 5280) + " Mi";
 
             } else {
                 s = String.valueOf(distance) + " ft";
@@ -419,6 +416,10 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
     public void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
 
+        if (getActivity() == null && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+            return;
+        }
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
