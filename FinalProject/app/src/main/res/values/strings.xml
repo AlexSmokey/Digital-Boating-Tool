@@ -56,4 +56,5 @@
     <string name="update_frequency_seconds">Update Frequency (seconds)</string>
     <string name="name_default_2">Name...</string>
     <string name="description_defualt">Description...</string>
+    <string name="hit_back">Hit back to choose another feature</string>
 </resources>

@@ -35,6 +35,6 @@ public class etcFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Snackbar.make(getView(), "Hit back to choose another feature", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(getView(), R.string.hit_back, Snackbar.LENGTH_LONG).show();
     }
 }
