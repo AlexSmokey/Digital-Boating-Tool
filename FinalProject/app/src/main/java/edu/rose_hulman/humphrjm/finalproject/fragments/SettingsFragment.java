@@ -145,9 +145,9 @@ public class SettingsFragment extends Fragment implements TextWatcher, CompoundB
 
         imperial = isChecked;
         if(imperial){
-            tvDistance.setText("Distance (feet)");
+            tvDistance.setText(R.string.distance_settings);
         } else {
-            tvDistance.setText("Distance (meters)");
+            tvDistance.setText(R.string.distance_meters_settings);
         }
 
     }

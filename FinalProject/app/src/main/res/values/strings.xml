@@ -57,4 +57,6 @@
     <string name="name_default_2">Name...</string>
     <string name="description_defualt">Description...</string>
     <string name="hit_back">Hit back to choose another feature</string>
+    <string name="distance_settings">Distance (feet)</string>
+    <string name="distance_meters_settings">Distance (meters)</string>
 </resources>
