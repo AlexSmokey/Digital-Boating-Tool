@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.HashMap;
 
 import edu.rose_hulman.humphrjm.finalproject.fragments.SettingsFragment;
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ANDROID_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         ROOT_DIRECTORY =  getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
 //        savedLocalImages = new HashMap<>();
 //        FirebaseAuth mAuth = FirebaseAuth.getInstance();
