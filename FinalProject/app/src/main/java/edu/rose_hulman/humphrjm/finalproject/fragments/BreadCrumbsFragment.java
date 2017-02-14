@@ -94,6 +94,7 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
     private float mAccelLast; // last acceleration including gravity
 
     private DatabaseReference breadCrumbReference;
+    private CrumbsChildEventListener crumbsChildEventListener;
     private GoogleMap mMap;
     private SupportMapFragment supportMapFragment;
     private HashMap<CustomLatLng, BreadCrumb> breadcrumbs = new HashMap<>();
@@ -102,7 +103,13 @@ public class BreadCrumbsFragment extends Fragment implements SensorEventListener
 
     private void dbInit() {
         breadCrumbReference = FirebaseDatabase.getInstance().getReference().child(MainActivity.ANDROID_ID).child("crumbs");
-        breadCrumbReference.addChildEventListener(new CrumbsChildEventListener());
+        if(crumbsChildEventListener == null) {
+            crumbsChildEventListener = new CrumbsChildEventListener();
+            breadCrumbReference.addChildEventListener(crumbsChildEventListener);
+        } else {
+            breadCrumbReference.removeEventListener(crumbsChildEventListener);
+            breadCrumbReference.addChildEventListener(crumbsChildEventListener);
+        }
     }
 
     private void mapInit() {
