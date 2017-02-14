@@ -1,6 +1,8 @@
 package edu.rose_hulman.humphrjm.finalproject.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -27,10 +29,13 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
 
     private ArrayList<MainPageOption> mainPageOptions = new ArrayList<>();
     private Context context;
+    private MainPageCallback callback;
 
-    public MainPageAdapter(Context context) {
+    public MainPageAdapter(Context context, MainPageCallback callback) {
         this.context = context;
+        this.callback = callback;
         mainPageOptions.add(new MainPageOption("Bread Crumbs","Tool for making digital markers on a map with descriptions and pictures in order to find one's way back", R.mipmap.ic_launcher, R.layout.breadcrumbs, new BreadCrumbsFragment()));
+        mainPageOptions.add(new MainPageOption("Boating Rules and Regulations", "Opens Boating Regulations in your Default Browser", R.mipmap.ic_launcher, -1, null));
         mainPageOptions.add(new MainPageOption("TBA","Coming Soon", R.mipmap.ic_launcher, R.layout.etc_info, new etcFragment()));
         notifyDataSetChanged();
     }
@@ -81,11 +86,17 @@ public class MainPageAdapter extends RecyclerView.Adapter<MainPageAdapter.ViewHo
                         fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
                         fragmentTransaction.addToBackStack(mainPageOption.getName());
                         fragmentTransaction.commit();
+                    } else if(mainPageOption.getLayoutId() == -1){
+                        callback.openBrowserClicked();
                     }
 
                 }
             });
 
         }
+    }
+
+    public interface MainPageCallback{
+        void openBrowserClicked();
     }
 }
