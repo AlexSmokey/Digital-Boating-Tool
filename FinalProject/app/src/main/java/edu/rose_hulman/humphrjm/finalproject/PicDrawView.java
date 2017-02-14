@@ -22,6 +22,8 @@ public class PicDrawView extends ImageView implements View.OnTouchListener{
     private float upx = 0;
     private float upy = 0;
 
+    private boolean willSave;
+
     Canvas canvas;
     Paint paint;
     Matrix matrix;
@@ -37,15 +39,29 @@ public class PicDrawView extends ImageView implements View.OnTouchListener{
         return this.bitMap;
     }
 
+    public boolean willSave() {
+        return willSave;
+    }
+
+    public void unSave() {
+        willSave = false;
+    }
+
+    public void save() {
+        willSave = true;
+    }
+
     public PicDrawView(Context context)
     {
         super(context);
+        willSave = false;
         setOnTouchListener(this);
     }
 
     public PicDrawView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        willSave = false;
         setOnTouchListener(this);
     }
 
@@ -53,6 +69,7 @@ public class PicDrawView extends ImageView implements View.OnTouchListener{
                              int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
+        willSave = false;
         setOnTouchListener(this);
     }
 
@@ -65,6 +82,7 @@ public class PicDrawView extends ImageView implements View.OnTouchListener{
         matrix = new Matrix();
         this.altBitMap = alteredBitmap;
         this.bitMap = bmp;
+        willSave = false;
         canvas.drawBitmap(bmp, matrix, paint);
 
         setImageBitmap(alteredBitmap);
@@ -102,6 +120,8 @@ public class PicDrawView extends ImageView implements View.OnTouchListener{
         }
         return true;
     }
+
+
 
     final float[] getPointerCoords(MotionEvent e)
     {

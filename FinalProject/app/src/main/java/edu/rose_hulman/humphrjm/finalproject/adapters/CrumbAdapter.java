@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 import edu.rose_hulman.humphrjm.finalproject.BreadCrumb;
+import edu.rose_hulman.humphrjm.finalproject.MainActivity;
 import edu.rose_hulman.humphrjm.finalproject.MainPageOption;
 import edu.rose_hulman.humphrjm.finalproject.R;
 import edu.rose_hulman.humphrjm.finalproject.fragments.BreadCrumbsFragment;
@@ -31,9 +34,11 @@ public class CrumbAdapter extends RecyclerView.Adapter<CrumbAdapter.ViewHolder> 
     private ArrayList<BreadCrumb> crumbs;
     private Context context;
     private DatabaseReference crumbsReference;
+    private BreadCrumbsFragment crumbsMapFragment;
 
-    public CrumbAdapter(Context context) {
+    public CrumbAdapter(Context context, BreadCrumbsFragment crumbsFrag) {
         this.context = context;
+        crumbsMapFragment = crumbsFrag;
         notifyDataSetChanged();
         crumbs = new ArrayList<>();
     }
@@ -50,7 +55,8 @@ public class CrumbAdapter extends RecyclerView.Adapter<CrumbAdapter.ViewHolder> 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                crumbs.remove(position);
+                crumbsMapFragment.removeMarker(crumbs.get(position).getKey());
+                crumbs.remove(crumbs.get(position).getKey());
                 notifyDataSetChanged();
                 return true;
             }
@@ -69,6 +75,7 @@ public class CrumbAdapter extends RecyclerView.Adapter<CrumbAdapter.ViewHolder> 
 
     public void addCrumb(BreadCrumb c) {
         crumbs.add(c);
+        Log.e("ADDED", c.getName() + c.getKey());
         notifyDataSetChanged();
     }
 
@@ -92,6 +99,7 @@ public class CrumbAdapter extends RecyclerView.Adapter<CrumbAdapter.ViewHolder> 
         }
     }
 
+
     public void removeCrumb(String c){
         for(BreadCrumb breadCrumb : crumbs){
             if(c.equals(breadCrumb.getKey())){
@@ -100,6 +108,10 @@ public class CrumbAdapter extends RecyclerView.Adapter<CrumbAdapter.ViewHolder> 
                 return;
             }
         }
+    }
+
+    public void clear() {
+        crumbs = new ArrayList<>();
     }
 
 
@@ -116,8 +128,7 @@ public class CrumbAdapter extends RecyclerView.Adapter<CrumbAdapter.ViewHolder> 
                     BreadCrumb c = crumbs.get(getAdapterPosition());
 
                     if(c != null) {
-                        FragmentActivity activity = (FragmentActivity) context;
-                        FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
+                        FragmentTransaction fragmentTransaction = crumbsMapFragment.getActivity().getSupportFragmentManager().beginTransaction();
                         fragmentTransaction.replace(R.id.fragment_container, CrumbFragment.newInstance(c));
                         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                         fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);

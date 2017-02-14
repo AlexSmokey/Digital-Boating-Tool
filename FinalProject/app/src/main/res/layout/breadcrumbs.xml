@@ -31,7 +31,7 @@
             android:textSize="16sp"
             />
         <EditText
-            android:inputType="numberDecimal"
+            android:inputType="numberDecimal|numberSigned"
             android:id="@+id/etLat"
             android:layout_width="0dp"
             android:layout_weight="3"
@@ -48,7 +48,7 @@
             />
 
         <EditText
-            android:inputType="numberDecimal"
+            android:inputType="numberDecimal|numberSigned"
             android:id="@+id/etLong"
             android:layout_width="0dp"
             android:layout_weight="3"
@@ -101,6 +101,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/map"
+        android:background="@color/colorPrimary"
         android:layout_below="@id/ll1"
         android:src="@drawable/example_map"
         android:layout_above="@+id/ll2"
@@ -120,24 +121,16 @@
             android:layout_marginEnd="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save"
+            android:text="LIST"
             />
 
-        <Button
-            android:id="@+id/bLoad"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Load"
-            />
         <Button
             android:id="@+id/bAdd"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add"
+            android:text="ADD"
             />
 
     </LinearLayout>

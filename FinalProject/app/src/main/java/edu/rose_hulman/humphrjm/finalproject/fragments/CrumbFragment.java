@@ -318,7 +318,12 @@ public class CrumbFragment extends Fragment {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             BreadCrumb breadCrumb = dataSnapshot.getValue(BreadCrumb.class);
-            crumb.setValues(breadCrumb);
+            if (breadCrumb == null) {
+                //add if needed
+            } else {
+                crumb.setValues(breadCrumb);
+            }
+
         }
 
         @Override

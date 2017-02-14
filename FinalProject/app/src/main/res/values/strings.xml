@@ -27,4 +27,9 @@
     <string name="error_act">Activity could not be found!!!!!!!!!!!!!!!!</string>
     <string name="boat_tag">BOAT</string>
     <string name="no_permission">Permission NOT granted</string>
+    <string name="unsave">Image will NOT be saved to Gallery</string>
+    <string name="save">Image will be saved to Gallery</string>
+    <string name="breadcrumb_error">"Breadcrumb could not be made "</string>
+    <string name="list">LIST</string>
+    <string name="map_vis">MAP</string>
 </resources>

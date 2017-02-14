@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -51,6 +53,7 @@ public class PictureFragment extends Fragment {
     private CrumbPicture crumbPicture;
     private PicDrawView imageView;
     private Bitmap alteredBitmap;
+    private Button button;
     private EditText etPictureTitle;
     private EditText etNotes;
 
@@ -93,6 +96,25 @@ public class PictureFragment extends Fragment {
         //return super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.breadcrumbs_edit, container, false);
         imageView = (PicDrawView) view.findViewById(R.id.ivEditImage);
+        button = (Button)view.findViewById(R.id.saveButton);
+        button.setText("SAVE");
+        imageView.unSave();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (imageView.willSave()) {
+                    imageView.unSave();
+                    Snackbar.make(getView(), R.string.unsave, Snackbar.LENGTH_LONG)
+                            .show();
+                    button.setText("SAVE");
+                } else {
+                    imageView.save();
+                    Snackbar.make(getView(), R.string.save, Snackbar.LENGTH_LONG)
+                            .show();
+                    button.setText("UNSAVE");
+                }
+            }
+        });
         etPictureTitle = (EditText) view.findViewById(R.id.etEditTitle);
         etNotes = (EditText) view.findViewById(R.id.etEditNotes);
         if(crumbPicture != null){
@@ -159,17 +181,9 @@ public class PictureFragment extends Fragment {
 
     @Override
     public void onStop() {
-        if (getActivity() == null) {
-            Log.e(getString(R.string.boat_tag), getString(R.string.error_act));
-            super.onStop();
-            return;
-        }
-        if (!permissionGranted) {
-            Log.e(getString(R.string.boat_tag), getString(R.string.no_permission));
-            super.onStop();
-            return;
-        }
-        Bitmap bmp = overlay(imageView.getbitMap(), imageView.getAltBitMap());
+
+        Bitmap additions = imageView.getAltBitMap();
+        Bitmap bmp = overlay(imageView.getbitMap(), additions);
 
         File photoFile = new File(MainActivity.ROOT_DIRECTORY, crumbPicture.getPicturePath());
 
@@ -196,12 +210,18 @@ public class PictureFragment extends Fragment {
         
         ImageHandler.uploadImage(crumbPicture, null);
 
+        if (getActivity() == null) {
+            Log.e(getString(R.string.boat_tag), getString(R.string.error_act));
+            super.onStop();
+            return;
+        }
+        if (!permissionGranted) {
+            Log.e(getString(R.string.boat_tag), getString(R.string.no_permission));
+            super.onStop();
+            return;
+        }
 
-
-
-
-        Bitmap emptyBitmap = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
-        if (!bmp.sameAs(emptyBitmap)) {
+        if (imageView.willSave()) {
             MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bmp, crumbPicture.getPictureTitle(), "Edited Breadcrumb");
         }
         super.onStop();
