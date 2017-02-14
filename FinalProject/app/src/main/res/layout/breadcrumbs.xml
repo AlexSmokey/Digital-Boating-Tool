@@ -5,7 +5,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bread Crumbs"
+        android:text="@string/bread_crumbs"
         android:textColor="@color/colorTitle"
         android:textSize="36sp"
         android:textAlignment="center"
@@ -27,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Lat: "
+            android:text="@string/lat"
             android:textSize="16sp"
             />
         <EditText
@@ -42,7 +42,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Long: "
+            android:text="@string/long_string"
             android:layout_weight="1"
             android:textSize="16sp"
             />
@@ -82,7 +82,7 @@
         android:layout_above="@+id/ll2"
         android:layout_alignParentStart="true"
         android:padding="3dp"
-        android:hint="current distance"
+        android:hint="@string/current_distance_string"
         android:textSize="18sp"
         android:background="#CCFFFFFF"
         android:textColor="@android:color/black"
@@ -121,7 +121,7 @@
             android:layout_marginEnd="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LIST"
+            android:text="@string/list_button"
             />
 
         <Button
@@ -130,7 +130,7 @@
             android:layout_marginEnd="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ADD"
+            android:text="@string/add_button"
             />
 
     </LinearLayout>

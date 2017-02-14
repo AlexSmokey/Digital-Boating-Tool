@@ -32,4 +32,13 @@
     <string name="breadcrumb_error">"Breadcrumb could not be made "</string>
     <string name="list">LIST</string>
     <string name="map_vis">MAP</string>
+    <string name="empty_string" />
+    <string name="save_string">SAVE</string>
+    <string name="delete_string">Delete</string>
+    <string name="bread_crumbs">Bread Crumbs</string>
+    <string name="lat">Lat:</string>
+    <string name="long_string">Long:</string>
+    <string name="current_distance_string">current distance</string>
+    <string name="list_button">LIST</string>
+    <string name="add_button">ADD</string>
 </resources>
