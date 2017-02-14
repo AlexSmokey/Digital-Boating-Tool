@@ -25,14 +25,17 @@ public class CrumbPicture implements Parcelable{
     private String pictureTitle;
     private String pictureNotes;
 
+    private static final String titleDefault = "Title";
+    private static final String notesDefault = "Notes";
+
 //    private Fragment switchTo;
 
     public CrumbPicture(){}
 
 
     public CrumbPicture(String picturePath) {
-        this.pictureTitle = "title";
-        this.pictureNotes = "notes";
+        this.pictureTitle = titleDefault;
+        this.pictureNotes = notesDefault;
 //        this.remotePicturePath = remotePicturePath;
 //        this.localPicturePath = localPicturePath;
         this.picturePath = picturePath;
