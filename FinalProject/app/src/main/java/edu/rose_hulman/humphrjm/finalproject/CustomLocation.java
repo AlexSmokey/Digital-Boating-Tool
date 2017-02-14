@@ -24,6 +24,24 @@ public class CustomLocation implements Parcelable{
     }
 
 
+    protected CustomLocation(Parcel in) {
+        key = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+    }
+
+    public static final Creator<CustomLocation> CREATOR = new Creator<CustomLocation>() {
+        @Override
+        public CustomLocation createFromParcel(Parcel in) {
+            return new CustomLocation(in);
+        }
+
+        @Override
+        public CustomLocation[] newArray(int size) {
+            return new CustomLocation[size];
+        }
+    };
+
     @Exclude
     public String getKey() {
         return key;
