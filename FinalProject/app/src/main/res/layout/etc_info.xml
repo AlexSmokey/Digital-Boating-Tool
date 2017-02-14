@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="More features will be added in the future.  If you have any suggestions send an email to goebelag@rose-hulman.edu."
+        android:text="@string/more_features"
         android:layout_width="match_parent"
         android:textSize="40sp"
         android:textAlignment="center"

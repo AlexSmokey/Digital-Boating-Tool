@@ -13,7 +13,7 @@
         android:id="@+id/Name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name..."
+        android:text="@string/name_default"
         android:textSize="36sp"
 
 

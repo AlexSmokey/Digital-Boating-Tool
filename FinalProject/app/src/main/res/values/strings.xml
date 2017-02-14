@@ -41,4 +41,19 @@
     <string name="current_distance_string">current distance</string>
     <string name="list_button">LIST</string>
     <string name="add_button">ADD</string>
+    <string name="picture_name_hint">Picture Name</string>
+    <string name="notes_go_here_hint">Notes Go Here</string>
+    <string name="notes_string">Notes</string>
+    <string name="example_text">1. Don\'t touch gator\n2. Good fishing near crashed boat\n3. Avoid shaded area\n</string>
+    <string name="name_default">Name...</string>
+    <string name="more_features">More features will be added in the future. If you have any suggestions send an email to goebelag@rose-hulman.edu.</string>
+    <string name="units">Units</string>
+    <string name="auto_generate_crumbs">Auto Generate Crumbs (beta)</string>
+    <string name="mi">Mi</string>
+    <string name="km">Km</string>
+    <string name="fastest_description">*Set 0 distance to ignore distance (better for battery), 0 time for fastest</string>
+    <string name="update_distance_meters">Update Distance (meters)</string>
+    <string name="update_frequency_seconds">Update Frequency (seconds)</string>
+    <string name="name_default_2">Name...</string>
+    <string name="description_defualt">Description...</string>
 </resources>

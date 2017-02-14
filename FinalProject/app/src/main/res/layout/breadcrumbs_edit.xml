@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etEditTitle"
-        android:hint="Picture Name"
+        android:hint="@string/picture_name_hint"
         android:textSize="22sp"
         android:layout_toRightOf="@+id/bEditDelete"
         android:layout_toStartOf="@+id/saveButton" />
@@ -41,7 +41,7 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Notes Go Here\nNotes Go Here\nNotes Go Here"
+        android:hint="@string/notes_go_here_hint"
         android:lines="3"
         />
 
