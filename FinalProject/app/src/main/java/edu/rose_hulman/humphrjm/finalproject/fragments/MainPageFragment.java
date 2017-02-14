@@ -1,6 +1,8 @@
 package edu.rose_hulman.humphrjm.finalproject.fragments;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -16,7 +18,7 @@ import edu.rose_hulman.humphrjm.finalproject.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainPageFragment extends Fragment {
+public class MainPageFragment extends Fragment implements MainPageAdapter.MainPageCallback{
 
     MainPageAdapter mainPageAdapter;
 
@@ -33,7 +35,7 @@ public class MainPageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main_page, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvMain);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mainPageAdapter = new MainPageAdapter(getContext());
+        mainPageAdapter = new MainPageAdapter(getContext(), this);
         recyclerView.setAdapter(mainPageAdapter);
 
 //        RelativeLayout breadCrumbsButton = (RelativeLayout) view.findViewById(R.id.breadCrumbs);
@@ -60,4 +62,9 @@ public class MainPageFragment extends Fragment {
     }
 
 
+    @Override
+    public void openBrowserClicked() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.uscgboating.org/regulations/"));
+        startActivity(browserIntent);
+    }
 }
