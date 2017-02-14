@@ -59,4 +59,5 @@
     <string name="hit_back">Hit back to choose another feature</string>
     <string name="distance_settings">Distance (feet)</string>
     <string name="distance_meters_settings">Distance (meters)</string>
+    <string name="egg">Goebel was here.</string>
 </resources>

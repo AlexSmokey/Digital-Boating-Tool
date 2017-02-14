@@ -9,9 +9,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import edu.rose_hulman.humphrjm.finalproject.R;
 
@@ -28,6 +30,16 @@ public class etcFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.etc_info, container, false);
         TextView mText = (TextView) view.findViewById(R.id.textView);
         mText.setOnClickListener(this);
+        Button b = (Button)view.findViewById(R.id.b);
+        b.setOnClickListener(this);
+        b.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(getActivity(), R.string.egg,
+                        Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
         ImageView mImage = (ImageView) view.findViewById(R.id.imageView);
         mImage.setOnClickListener(this);
         return view;

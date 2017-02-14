@@ -12,6 +12,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/textView" />
 
+
+    <Button
+        android:text=""
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:id="@+id/b" />
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
